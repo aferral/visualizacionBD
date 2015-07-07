@@ -162,8 +162,15 @@ marco09.grid(row=9,column=0)
 
 
 #Medicamento
+marco10 = Frame(r)
+marco10.grid(row=10,column=0)
 
-#Agregar resultados
-
+#Mostrar resultados
+marco11 = Frame(r)
+lResultados = Label(marco11,text="Resultados de query: ")
+lResultados.pack()
+eResultados = Entry(marco11)
+eResultados.pack()
+marco11.grid(row=11,column=0)
 
 r.mainloop()
