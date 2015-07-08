@@ -1,6 +1,6 @@
 __author__ = 'aferral'
 
-
+#Libreria de tabla en https://github.com/dmnfarrell/tkintertable
 from Tkinter import *
 import ttk
 from tkintertable.Tables import TableCanvas
