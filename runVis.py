@@ -3,9 +3,14 @@ __author__ = 'aferral'
 
 from Tkinter import *
 import ttk
-r = Tk()
-marco00=Frame(r)
+from tkintertable.Tables import TableCanvas
+from tkintertable.TableModels import TableModel
 
+r = Tk()
+r.wm_title("Ventana de busqueda")
+marco00=Frame(r)
+lTextoEntrada = Label(marco00, text="Ventana de busqueda")
+lTextoEntrada.pack()
 lIdRadio = Label(marco00, text="IdRadio")
 lIdRadio.pack(side=LEFT)
 eIdRadio = Entry(marco00)
@@ -38,7 +43,8 @@ marco02.grid(row=2,column=0)
 #Sexo
 
 marco03=Frame(r)
-
+lSexo= Label(marco03, text="Sexo: ")
+lSexo.pack(side=LEFT)
 boolSexo = False;
 Radiobutton(marco03, text="M", variable=boolSexo, value=1).pack(anchor=W)
 Radiobutton(marco03, text="H", variable=boolSexo, value=2).pack(anchor=W)
@@ -150,13 +156,13 @@ marco08.grid(row=8,column=0)
 
 #Fuma
 marco09 = Frame(r)
-lConfirmado = Label(marco08,text="Confirmado ? ")
+lConfirmado = Label(marco09,text="Fuma ? ")
 lConfirmado.pack(side=LEFT)
 varSi = IntVar()
 varSospechoso = IntVar()
-c = Checkbutton(marco08, text="Si", variable=varSi)
+c = Checkbutton(marco09, text="Si", variable=varSi)
 c.pack(side=LEFT)
-c = Checkbutton(marco08, text="Sospechoso", variable=varSospechoso)
+c = Checkbutton(marco09, text="No", variable=varSospechoso)
 c.pack(side=LEFT)
 marco09.grid(row=9,column=0)
 
@@ -169,8 +175,21 @@ marco10.grid(row=10,column=0)
 marco11 = Frame(r)
 lResultados = Label(marco11,text="Resultados de query: ")
 lResultados.pack()
-eResultados = Entry(marco11)
-eResultados.pack()
+bExportExcel = Button(marco11, text="Exportar a excel")
+bExportExcel.pack()
 marco11.grid(row=11,column=0)
+
+marco12 = Frame(r)
+model = TableModel()
+data = {'fila': {'col22':22,'col2':245,'col3':587,'col4':999},'fila2':{'col1':223,'col2':44,'col3':55,'col4':66}}
+model.importDict(data)
+table = TableCanvas(marco12, model,
+                    cellwidth=60, cellbackgr='#e3f698',
+                    thefont=('Arial',12),rowheight=18, rowheaderwidth=30,
+                    rowselectedcolor='yellow', editable=True)
+table.createTableFrame()
+marco12.grid(row=12,column=0)
+
+
 
 r.mainloop()
