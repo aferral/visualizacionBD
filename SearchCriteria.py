@@ -24,8 +24,7 @@ def askDb(stringQuery,params):
 
 def auxProcessList(StringQuery,param):
     try:
-        params = (str(param),)
-        listRes =  askDb(StringQuery,params)
+        listRes = askDb(StringQuery,param)
 
         for i in range(len(listRes)):
             listRes[i] = listRes[i][0]
@@ -56,12 +55,12 @@ class IdSearch(AbstractSearchCriteria):
     def giveFilterResults(self):
         query = 'Select "IdRadio" FROM "Radiografia" WHERE "IdRadio" = %s '
         idToSearch = self.eIdRadio.get()
-        return auxProcessList(query,idToSearch)
-
+        params = (str(idToSearch),)
+        return auxProcessList(query,params)
 
 
 class NameSearch(AbstractSearchCriteria):
-    def __init__(self,marco):
+    def __init__(self, marco):
         AbstractSearchCriteria.__init__(self, marco)
         lNombrePaciente = Label(marco, text="Nombre Paciente")
         lNombrePaciente.pack(side=LEFT)
@@ -70,9 +69,10 @@ class NameSearch(AbstractSearchCriteria):
         pass
 
     def giveFilterResults(self):
-        query = 'Select "IdRadio" FROM "Pertenece a" WHERE "Nombre" % %s '
-        nameToSearch = self.eNombrePaciente.get()
-        return auxProcessList(query,nameToSearch)
+        query = 'Select "IdRadio" FROM "Radiografia" WHERE "NombrePaciente" LIKE %s '
+        nameToSearch = "%"+self.eNombrePaciente.get()+"%"
+        params = (str(nameToSearch),)
+        return auxProcessList(query,params)
 
 class RutSearch(AbstractSearchCriteria):
     def __init__(self, marco):
@@ -83,9 +83,10 @@ class RutSearch(AbstractSearchCriteria):
         self.eRutPaciente.pack(side=LEFT)
         pass
     def giveFilterResults(self):
-        query = 'Select "IdRadio" FROM "Pertenece a" WHERE "RUN" = %s '
+        query = 'Select "IdRadio" FROM "Radiografia" WHERE "RUNPaciente" = %s '
         rutToSearch = self.eRutPaciente.get()
-        return auxProcessList(query,rutToSearch)
+        params = (str(rutToSearch),)
+        return auxProcessList(query,params)
 
 class SexoSearch(AbstractSearchCriteria):
     def __init__(self,marco):
@@ -97,19 +98,19 @@ class SexoSearch(AbstractSearchCriteria):
         Radiobutton(marco, text="H", variable=self.boolSexo, value=2).pack(anchor=W)
         pass
     def giveFilterResults(self):
-        query = 'SELECT "IdRadio" FROM "Pertenece a" WHERE "Pertenece a"."RUN" IN (SELECT "RUN" FROM "public"."Paciente" WHERE "Sexo" = %s)'
+        query = 'SELECT "IdRadio" FROM "Radiografia" WHERE "Radiografia"."RUNPaciente" IN (SELECT "RUN" FROM "public"."Paciente" WHERE "Sexo" = %s)'
         valRadio = self.boolSexo.get()
         if valRadio == 1: #Es mujer buscar todas
-            param = ""'M'""
-            return auxProcessList(query,param)
+            params = (str(""'M'""),)
+            return auxProcessList(query,params)
         elif valRadio == 2:
-            param = ""'H'""
-            return auxProcessList(query,param)
+            params = (str(""'H'""),)
+            return auxProcessList(query,params)
         else:
             return []
 
 class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
-    def __init__(self,marco,lista):
+    def __init__(self, marco, lista):
         AbstractSearchCriteria.__init__(self,marco)
         marcoSelEnf = Frame(marco)
         lEnfermedad= Label(marcoSelEnf, text="Enfermedad a buscar: ")
@@ -118,13 +119,11 @@ class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
         self.comboEnfermedades = ttk.Combobox(marcoSelEnf, textvariable=self.enfermedadaValues,
                                 state='readonly')
         self.comboEnfermedades['values'] = tuple(lista)
-        self.comboEnfermedades.current(0)
         self.comboEnfermedades.pack()
         marcoSelEnf.pack()
 
         marcoConf = Frame(marco)
         self.varSi = IntVar()
-        self.varSospechoso = IntVar()
         Radiobutton(marco, text="Confirmado", variable=self.varSi, value=1).pack(anchor=W)
         Radiobutton(marco, text="Sospechoso", variable=self.varSi, value=2).pack(anchor=W)
 
@@ -134,21 +133,28 @@ class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
 
     def update(self,objToQuery):
         self.comboEnfermedades['values'] = tuple(objToQuery.getEnfList())
-        self.comboEnfermedades.current(0)
+
+    def giveFilterResults(self):
+        query = 'Select "IdRadio" FROM "Representa" WHERE ("NombreE" = %s AND "Confirmado" = %s)'
+        params = (str(self.comboEnfermedades.get()),'TRUE' if (self.varSi.get()==1) else 'FALSE',)
+        return auxProcessList(query,params)
 
 class TipoRadioSearch(AbstractSearchCriteria):
     def __init__(self,marco):
         AbstractSearchCriteria.__init__(self,marco)
         lTipoRadiografia= Label(marco, text="Tipo de radiografia: ")
         lTipoRadiografia.pack(side=LEFT)
-        tipoRadiografiaValues = StringVar()
-        comboTipoRadiografia = ttk.Combobox(marco, textvariable=tipoRadiografiaValues,
+        self.tipoRadiografiaValues = StringVar()
+        comboTipoRadiografia = ttk.Combobox(marco, textvariable=self.tipoRadiografiaValues,
                                 state='readonly')
         comboTipoRadiografia['values'] = ('Radiografia', 'Escaner', 'Resonancia')
-        comboTipoRadiografia.current(0)
         comboTipoRadiografia.pack()
 
         pass
+    def giveFilterResults(self):
+        query = 'Select "IdRadio" FROM "Radiografia" WHERE "Tipo" = %s'
+        params = (str(self.tipoRadiografiaValues.get()),)
+        return auxProcessList(query,params)
 
 class FechaSearch(AbstractSearchCriteria): # Va rango de fechas
     def __init__(self,marco):
@@ -193,18 +199,23 @@ class FechaSearch(AbstractSearchCriteria): # Va rango de fechas
         sf = SecondFrame(Tkinter.Toplevel())
         sf.setCallback(fun)
 
-
+    def giveFilterResults(self):
+        query = 'Select "IdRadio" FROM "Radiografia" WHERE ("Fecha" > %s AND "Fecha" < %s)'
+        params = (self.varF0.get(),self.varFf.get(),)
+        return auxProcessList(query,params)
 class FumaSearch(AbstractSearchCriteria):
     def __init__(self,marco):
         AbstractSearchCriteria.__init__(self,marco)
         lConfirmado = Label(marco,text="Fuma ? ")
         lConfirmado.pack(side=LEFT)
 
-        self.boolFuma = IntVar()
-        Radiobutton(marco, text="Si", variable=self.boolFuma, value=1).pack(anchor=W)
-        Radiobutton(marco, text="No", variable=self.boolFuma, value=2).pack(anchor=W)
-
         pass
+    def giveFilterResults(self):
+        query = 'SELECT "IdRadio" FROM "En Contexto de" WHERE "IdAntecedentes" IN ' \
+        '(SELECT "IdAntecedentes" FROM "Adiccion" JOIN "Sustancia" ON ("Adiccion"."IdSustancia" =' \
+        ' "Sustancia"."IdSustancia")  WHERE ("NombreSustancia" = %s))'
+        params = ('Tabaco',)
+        return auxProcessList(query,params)
 
 class MedicamentoSearch(AbstractSearchCriteria):
     def __init__(self,marco,lista):
@@ -216,11 +227,20 @@ class MedicamentoSearch(AbstractSearchCriteria):
         self.comboMedicamento = ttk.Combobox(marco, textvariable=self.medicamentoValues,
                                 state='readonly')
         self.comboMedicamento['values'] = tuple(lista)
-        self.comboMedicamento.current(0)
         self.comboMedicamento.pack()
 
         pass
 
     def update(self,objToQuery):
         self.comboMedicamento['values'] = tuple(objToQuery.getMedList())
-        self.comboMedicamento.current(0)
+
+
+    def giveFilterResults(self): #Posible mejora de velocidad tener las id ya anotadas en lista
+            query = 'SELECT "IdRadio" FROM "En Contexto de" JOIN "Prescripcion Medica" ' \
+                    'ON ("En Contexto de"."IdAntecedentes" = "Prescripcion Medica"."IdAntecedentes")' \
+                    ' WHERE "IdMedicamento" IN (SELECT "Medicamento"."IdMedicamento" FROM "Prescripcion Medica"' \
+                    ' JOIN "Medicamento" ON ("Medicamento"."IdMedicamento" = "Prescripcion Medica"."IdMedicamento")' \
+                    ' WHERE "Medicamento"."NombreMedicamento" = %s) '
+            medicamentoToSearch = self.comboMedicamento.get()
+            params = (str(medicamentoToSearch),)
+            return auxProcessList(query,params)

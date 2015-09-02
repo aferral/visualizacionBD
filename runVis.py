@@ -6,11 +6,11 @@ import ttk
 from tkintertable.Tables import TableCanvas
 from tkintertable.TableModels import TableModel
 from SearchCriteria import *
-
+from test3 import *
 listaSearch = []
 resultSearch = []
-
-
+#Crear la cosa de la primary keys
+#ESta enfocado en busqueda de radiografias
 
 #Por alguna razon no busca bien con este rut 10324885 tiene asociado 2 encuentra 1 (problema BD no interfaz)
 
@@ -27,7 +27,6 @@ resultSearch = []
 
 #La busqueda de nombres parece no funcionar
 
-#Nueva ventana de paciente asociado, antecedentes
 
 #Funcionalidad opcional
 #Exportar a excel
@@ -45,6 +44,7 @@ class GraficInterfaceDb:
         self.actualizarListas()
 
         r = Tk()
+
         r.wm_title("Ventana de busqueda")
 
         lTextoEntrada = Label(r, text="Ventana de busqueda")
@@ -117,23 +117,29 @@ class GraficInterfaceDb:
 
         marco12 = Frame(r)
         self.model = TableModel()
-        # data = {'fila': {'col22':22,'col2':245,'col3':587,'col4':999},'fila2':{'col1':223,'col2':44,'col3':55,'col4':66}}
-        # self.model.importDict(data)
         self.table = TableCanvas(marco12, self.model,
                             cellwidth=60, cellbackgr='#e3f698',
-                            thefont=('Arial',12),rowheight=18, rowheaderwidth=30,
+                            thefont=('Arial',9),rowheight=18, rowheaderwidth=30,
                             rowselectedcolor='yellow', editable=True)
         self.table.createTableFrame()
         marco12.grid(row=12,column=0)
 
-
-
+        self.b = VentanaDetalles(Tkinter.Toplevel())
+        self.b.setWindow(self)
+        r.bind("<Button-1>",self.b.setValues)
         r.mainloop()
 
     def getEnfList(self):
         return self.listEnfermedad
     def getMedList(self):
         return self.listMedicamentos
+    def getCurrentIdRadio(self):
+        try:
+            print self.table.get_currentRecord()
+            return self.table.get_currentRecord()["IdRadio11"]
+        except:
+            return None
+
 
     def actualizarListas(self):
         query1 =  'SELECT DISTINCT "NombreE" FROM "Enfermedad" ORDER BY "NombreE" '
@@ -153,7 +159,15 @@ class GraficInterfaceDb:
             if(element.isActive()):
                 result = element.giveFilterResults()
                 print result
-                resultSearch += result
+                if (len(resultSearch) != 0):
+                    set1 = set(result)
+                    set2 = set(resultSearch)
+                    set3 = set1 & set2
+                    print set3
+                    resultSearch = set3
+                else:
+                    resultSearch = result
+                #resultSearch += result
 
         self.showResultInTable(resultSearch)
         return
@@ -161,24 +175,23 @@ class GraficInterfaceDb:
     def showResultInTable(self,lista):
         data = {}
 
-
+        #Ahora esta mostrando todas las radiografias que encuentra con criterios (incluso si no tieneen enf asociada)
         contador = 0
-        query = 'select * from "Radiografia" JOIN "Representa" ON ("Radiografia"."IdRadio" = "Representa"."IdRadio") WHERE "Radiografia"."IdRadio" in %s'
-        columnNames = {0:"IdRadio", 1:"Fecha", 2:"Zona", 3:"Procedencia", 4:"Tipo", 5:"Comentario", 6:"IdRadio",
-                       7:"NombreE", 8:"Confirmado",9:"Comentario",10:"Evolucion",11:"Agudeza"}
+        query = 'select * from "Radiografia" LEFT OUTER JOIN "Representa" ON ("Radiografia"."IdRadio" = "Representa"."IdRadio") WHERE "Radiografia"."IdRadio" in %s'
+        columnNames = {0:"IdRadio11", 1:"Fecha", 2:"Zona", 3:"Procedencia", 4:"Tipo", 5:"Comentario", 6:"RunPaciente",
+                       7:"NombrePaciente", 8:"IdRadio22",9:"NombreEnfermedad",10:"Confirmado",11:"Comentario",12:"Evolucion",13:"Agudeza"}
 
         if(len(lista) != 0):
             resultQuery = askDb(query,(tuple(lista),))
         else:
-            data = {str(1):{"IdRadio":"", "Fecha":"", "Zona":"", "Procedencia":"", "Tipo":"", "Comentario":"", "IdRadio":"",
-                       "NombreE":"", "Confirmado":"","Comentario":"","Evolucion":"","Agudeza":""}}
+            data = {}
 
             self.model.importDict(data)
             self.model.setupModel({})
             self.table.redrawTable()
 
             return
-
+        #Aca es posible que falle si los nombre se las columnas no estan correctos
         for element in resultQuery:
             temp = zip(element,range(len(element)))
             tempDic = {}
@@ -186,9 +199,10 @@ class GraficInterfaceDb:
                 tempDic[str(columnNames[atomicVal[1]])] = str(atomicVal[0])
             data[str(contador)] = tempDic
             contador+=1
-
+        self.model.setupModel({})
         self.model.importDict(data)
         self.table.redrawTable()
+
 
         return
 
