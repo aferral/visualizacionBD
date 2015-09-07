@@ -106,7 +106,7 @@ def giveRut():
 
 
 def sendDb(query, params):
-    conn = psycopg2.connect(database="database10000", host="localhost", port=5432, password="58132154",
+    conn = psycopg2.connect(database="radiografiasUchile", host="localhost", port=5432, password="58132154",
                             user="postgres")
     cursor = conn.cursor();
     cursor.execute(query, params);
@@ -423,15 +423,15 @@ def generarRelacionRadiografiaEnfermedad(numero):
     generarFrames()
 
 
-generarPacientes(5000)
+generarPacientes(200)
 generarSustanciasAlergia()
 generarEnfermedades()
-generarRadiografias(5000)
+generarRadiografias(200)
 generarSustanciasDroga()
 generarTrabajos()
 generarMedicamentos()
 
 
 generarRelacionAntecedesRadiografia()
-generarRelacionRadiografiaEnfermedad(1000)
+generarRelacionRadiografiaEnfermedad(100)
 
