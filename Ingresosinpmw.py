@@ -13,6 +13,18 @@ class Demo:
     def __init__(self, parent):
         
         self.parent = parent
+        
+        Pmw.aboutversion('9.9')
+        Pmw.aboutcopyright('Copyright My Company 1999\nAll rights reserved')
+        Pmw.aboutcontact(
+            'For information about this application contact:\n' +
+            '  My Help Desk\n' +
+            '  Phone: +XXXXXXXXXX\n' +
+            '  email: help@my.company.com.au\n' +
+            '  aferral and argorthas'
+        )
+        self.about = Pmw.AboutDialog(parent, applicationname = 'My Application')
+        self.about.withdraw()
 
 
         #################################################
@@ -47,10 +59,10 @@ class Demo:
                 command = lambda: self.newWindow("Droga"),
                 label = 'Droga')
 
-        menuBar.addmenu('Options', 'Set user preferences')
-        menuBar.addmenuitem('Options', 'command', 'Set general preferences',
-                command = PrintOne('Action: general options'),
-                label = 'General...')
+        menuBar.addmenu('Help', 'Set user preferences')
+        menuBar.addmenuitem('Help', 'command', 'Set general preferences',
+                command = self.execute,
+                label = 'About')
 
 
 
@@ -65,7 +77,7 @@ class Demo:
         self.notebook = Pmw.NoteBook(parent)
         self.notebook.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
-        # Add the "Gemerañ" page to the notebook.
+        # Add the "GemeraÃ±" page to the notebook.
         self.page = self.notebook.add('General')
         self.notebook.tab('General').focus_set()
 
@@ -197,57 +209,102 @@ class Demo:
         # Add another page
         self.page1 = self.notebook.add('Antecedentes')
 
-        # Create the "Antecedentes" contents of the page.
-        self.group2 = Pmw.Group(self.page1, tag_text = 'Antecedentes')
-        self.group2.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
+       # Create the "Radiografia" contents of the page.
+        ##Trabajo
+        self.groupTrabajo = Pmw.Group(self.page1, tag_text = 'Trabajo')
+        self.groupTrabajo.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
-        self.var1 = IntVar()
-        Checkbutton(self.group2.interior(), variable=self.var1).grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        self.trabajo = Label(self.groupTrabajo.interior(), 
+                text = 'Trabajo:').grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        self.trabjoentry = Entry(self.groupTrabajo.interior()).grid(row=0,column=1)
+
+        self.buttonTrabajoplus = Button(self.groupTrabajo.interior(),text="+",
+                            command= lambda: self.plusEntry(self.trabajoArray)).grid(row=0,column=2,sticky=E, padx=5, pady=5)
+        self.buttonTrabajominus = Button(self.groupTrabajo.interior(),text="-",
+                            command= lambda: self.minus(self.trabajoArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+        ######################################################################
         
-        self.trabajo = Label(self.group2.interior(), 
-                text = 'Trabajo:').grid(row=0,column=1,sticky=W, padx=5, pady=5)
-        self.trabjoentry = Entry(self.group2.interior()).grid(row=0,column=2)
 
+        ##Medicamentos
+        self.groupMedicamentos = Pmw.Group(self.page1, tag_text = 'Medicamentos')
+        self.groupMedicamentos.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
-        self.var2 = IntVar()
-        Checkbutton(self.group2.interior(), variable=self.var2).grid(row=1,column=0,sticky=W, padx=5, pady=5)
-        
-        self.medicamentos= Label(self.group2.interior(), text="Medicamentos:").grid(row=1,column=1,sticky=W, padx=5, pady=5)
+        self.medicamentos= Label(self.groupMedicamentos.interior(), text="Medicamentos:").grid(row=0,column=0,sticky=W, padx=5, pady=5)
         self.medicamentoValue = StringVar()
-        self.medicamentoCombo = ttk.Combobox(self.group2.interior(), textvariable=self.medicamentoValue,
+        self.medicamentoCombo = ttk.Combobox(self.groupMedicamentos.interior(), textvariable=self.medicamentoValue,
                                 state='readonly')
         self.medicamentoCombo['values'] = ('ibuprofeno','etc')
         self.medicamentoCombo.current(0)
-        self.medicamentoCombo.grid(row=1,column=2)
-
-
-        self.var3 = IntVar()
-        Checkbutton(self.group2.interior(), variable=self.var3).grid(row=2,column=0,sticky=W, padx=5, pady=5)
+        self.medicamentoCombo.grid(row=0,column=1)
         
-        self.alergia= Label(self.group2.interior(), text="Alergias:").grid(row=2,column=1,sticky=W, padx=5, pady=5)
+        self.buttonMedicamentosplus = Button(self.groupMedicamentos.interior(),text="+",
+                            command= lambda: self.plusCombo(self.medicamentoArray)).grid(row=0,column=2,sticky=E, padx=5, pady=5)
+        self.buttonMedicamentosminus = Button(self.groupMedicamentos.interior(),text="-",
+                            command= lambda: self.minus(self.medicamentoArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+        #########################################################################
+
+        
+        ##Alergia
+        self.groupAlergia = Pmw.Group(self.page1, tag_text = 'Alergia')
+        self.groupAlergia.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
+
+        
+        self.alergia= Label(self.groupAlergia.interior(), text="Alergias:").grid(row=0,column=0,sticky=W, padx=5, pady=5)
         self.alergiaValue = StringVar()
-        self.alergiaCombo = ttk.Combobox(self.group2.interior(), textvariable=self.alergiaValue,
+        self.alergiaCombo = ttk.Combobox(self.groupAlergia.interior(), textvariable=self.alergiaValue,
                                 state='readonly')
         self.alergiaCombo['values'] = ('bichos','etc')
         self.alergiaCombo.current(0)
-        self.alergiaCombo.grid(row=2,column=2)
+        self.alergiaCombo.grid(row=0,column=1)
 
+        self.buttonAlergiaplus = Button(self.groupAlergia.interior(),text="+",
+                            command= lambda: self.plusCombo(self.alergiaArray)).grid(row=0,column=2,sticky=E, padx=5, pady=5)
+        self.buttonAlergiaminus = Button(self.groupAlergia.interior(),text="-",
+                            command= lambda: self.minus(self.alergiaArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+        ##########################################################################
 
-        self.var4 = IntVar()
-        Checkbutton(self.group2.interior(), variable=self.var4).grid(row=3,column=0,sticky=W, padx=5, pady=5)
         
-        self.adiccion= Label(self.group2.interior(), text="Adiccion:").grid(row=3,column=1,sticky=W, padx=5, pady=5)
+        ##Adiccion
+        self.groupAdiccion = Pmw.Group(self.page1, tag_text = 'Adiccion')
+        self.groupAdiccion.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
+
+        
+        self.adiccion= Label(self.groupAdiccion.interior(), text="Adiccion:").grid(row=0,column=0,sticky=W, padx=5, pady=5)
         self.adiccionValue = StringVar()
-        self.adiccionCombo = ttk.Combobox(self.group2.interior(), textvariable=self.adiccionValue,
+        self.adiccionCombo = ttk.Combobox(self.groupAdiccion.interior(), textvariable=self.adiccionValue,
                                 state='readonly')
         self.adiccionCombo['values'] = ('PastaBase','etc')
         self.adiccionCombo.current(0)
-        self.adiccionCombo.grid(row=3,column=2)
+        self.adiccionCombo.grid(row=0,column=1)
+
+        self.buttonAdiccionplus = Button(self.groupAdiccion.interior(),text="+",
+                            command= lambda: self.plusCombo(self.adiccionArray)).grid(row=0,column=2,sticky=E, padx=5, pady=5)
+        self.buttonAdiccionminus = Button(self.groupAdiccion.interior(),text="-",
+                            command= lambda: self.minus(self.adiccionArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+        ########################################################################
 
         
-        self.comentario1 = Label(self.group2.interior(), 
-                text = 'Comentario:').grid(row=4,column=1,sticky=W, padx=5, pady=5)
-        self.comentarioentry1 = Entry(self.group2.interior()).grid(row=4,column=2)
+        self.comentario1 = Label(self.groupAdiccion.interior(), 
+                text = 'Comentario:').grid(row=4,column=0,sticky=W, padx=5, pady=5)
+        self.comentarioentry1 = Entry(self.groupAdiccion.interior()).grid(row=4,column=1)
+        #########################################################################
+        #Declarar arreglos para multiplicar basuras
+        #########################################################################
+        #Obj1.grid_forget()
+        #Agrupar cada cosa por su propio grupo
+        self.medicamentoVar=[self.medicamentoValue]
+        self.alergiaVar=[self.alergiaValue]
+        self.adiccionVar=[self.adiccionValue]
+        
+
+        self.trabajoArray=[0,0,self.groupTrabajo,self.trabjoentry]
+        self.medicamentoArray=[1,self.medicamentoVar,self.groupMedicamentos,self.medicamentoCombo]
+        self.alergiaArray=[2,self.alergiaVar,self.groupAlergia,self.alergiaCombo]
+        self.adiccionArray=[3,self.adiccionVar,self.groupAdiccion,self.adiccionCombo]
+
+
+
+        #########################################################################
         
 
         self.group3 = Pmw.Group(self.page1, tag_text = 'Intervenciones')
@@ -414,6 +471,49 @@ class Demo:
         t = Tkinter.Toplevel(self.parent)
         ventana = VentanaExtra.Demo(t,tipo)
         pass
+    
+        def execute(self):
+        self.about.show()
+
+    def plusCombo(self,aArray):
+        n=aArray[0]
+        aVariable = StringVar()
+        aCombo =ttk.Combobox(aArray[2].interior(), textvariable=aVariable,
+                                state='readonly')
+        #######Relleno segun tipo, puse n =0 de pajero, seguramente tendre que poner en [0] el tipo
+        #####0 = trabajo(no se usa)
+        #####1 = medicamento
+        #####2 = alergia
+        #####3 = adiccion
+        
+        if (n==1):
+            aCombo['values'] = ('ibuprofeno', 'aspirina', 'etc')
+        if (n==2):
+            aCombo['values'] = ('queso', 'bichos', 'plata')
+        if (n==3):
+            aCombo['values'] = ('pastaBase','Alcohol','asdasd')
+        aCombo.current(0)
+        aCombo.grid(row=len(aArray)-3,column=1, padx=5, pady=5)
+        aArray.append(aCombo)
+        aArray[1].append(aVariable)
+        pass
+         
+
+
+    def plusEntry(self,aArray):
+        aEntry = Entry(aArray[2].interior())
+        aEntry.grid(row=len(aArray)-3,column=1, padx=5, pady=5)
+        aArray.append(aEntry)
+        pass
+        
+
+
+    def minus(self,aArray):
+        if (aArray[1]==0):
+            aArray[1].pop()
+        disable = aArray.pop()
+        disable.grid_forget()
+        pass
 
 
 def auxProcessList(StringQuery,param):
@@ -449,13 +549,6 @@ def askDb(stringQuery,params):
     return result
 
 
-
-class PrintOne:
-    def __init__(self, text):
-        self.text = text
-
-    def __call__(self):
-        print self.text
 
 
 root = Tkinter.Tk()
