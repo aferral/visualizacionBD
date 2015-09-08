@@ -450,7 +450,12 @@ def askDb(stringQuery,params):
 
 
 
+class PrintOne:
+    def __init__(self, text):
+        self.text = text
 
+    def __call__(self):
+        print self.text
 
 
 root = Tkinter.Tk()
