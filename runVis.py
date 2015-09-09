@@ -9,27 +9,16 @@ from SearchCriteria import *
 from ventanaAntecedentes import *
 listaSearch = []
 resultSearch = []
-#Crear la cosa de la primary keys
-#Esta enfocado en busqueda de radiografias
 
 #Por alguna razon no busca bien con este rut 10324885 tiene asociado 2 encuentra 1 (problema BD no interfaz)
 
-#Activar busqueda por query en cada uno de los tipos de filotr
 
-#Una vez con todas la ids de busqueda mandar a show que actualiza la tablas excel
-#En estas solo toma una id por fila de la tabla radiografias x enfermedades
-#Esta mete todas enfermedades en una sola comulna cosa de un idRadio por fila
-#De hacerle click expande paciente asociado y antecedetse de radiografias
-#Hacer not null confirmado (para que sea binario)
-#Fuma es un nuevo antecedente y es not null
-#Radiografias es un atributo (opt)
-#Como quitar ambiguedad de nombres
-
-#La busqueda de nombres parece no funcionar
-
+#Que pasa con multiples enfermedades
+#Que pasa con multiples frames
 
 #Funcionalidad opcional
 #Exportar a excel
+#Actualizacion de codigo mediante git
 #Backup automatico y recuperacion
 #Documentacion
 #Claves y usuarios
@@ -106,6 +95,7 @@ class GraficInterfaceDb:
 
         self.b = VentanaDetalles(Tkinter.Toplevel())
         self.b.setWindow(self)
+
         self.r.bind("<Button-1>",self.b.setValues)
         self.r.mainloop()
 
@@ -115,6 +105,8 @@ class GraficInterfaceDb:
     def getMedList(self):
         return self.listMedicamentos
 
+
+    #Si quiere gridear creo que aqui es un buen lugar
     def putInPlace(self, claseBusqueda):
         marco00=Frame(self.r)
         objetoNuevo = claseBusqueda(marco00)
