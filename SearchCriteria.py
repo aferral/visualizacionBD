@@ -52,15 +52,20 @@ def auxProcessList(StringQuery,param):
 
 class AbstractSearchCriteria(object):
     def __init__(self,marco):
+        self.comp = []
         self.active = IntVar()
         c = Checkbutton(marco, variable=self.active)
         c.pack(side=LEFT)
+
+        self.comp.append(c)
 
         pass
     def isActive(self):
         return self.active.get()
     def giveFilterResults(self):
         return []
+    def giveComp(self):
+        return self.comp
 
 class IdSearch(AbstractSearchCriteria):
     def __init__(self,marco):

@@ -13,8 +13,6 @@ class Demo:
         #Grupo de Creacion
         #
         self.tipo = tipo
-
-        
         self.groupcrear = Pmw.Group(parent,
                 tag_pyclass = Tkinter.Button,
                 tag_text='Crear')

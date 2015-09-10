@@ -77,7 +77,7 @@ class Demo:
         self.notebook = Pmw.NoteBook(parent)
         self.notebook.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
-        # Add the "GemeraÃ±" page to the notebook.
+        # Add the "Gemerañ" page to the notebook.
         self.page = self.notebook.add('General')
         self.notebook.tab('General').focus_set()
 
@@ -482,7 +482,7 @@ class Demo:
         ventana = VentanaExtra.Demo(t,tipo)
         pass
     
-        def execute(self):
+    def execute(self):
         self.about.show()
 
     def plusCombo(self,aArray):
