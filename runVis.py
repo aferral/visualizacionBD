@@ -106,11 +106,21 @@ class GraficInterfaceDb:
         return self.listMedicamentos
 
 
-    #Si quiere gridear creo que aqui es un buen lugar
+    #Si quieres gridear creo que aqui es un buen lugar
     def putInPlace(self, claseBusqueda):
         marco00=Frame(self.r)
-        objetoNuevo = claseBusqueda(marco00)
+
+        #SI ACA COLOCAS TRUE TODOS LOS COMPONENTES NO HACEN PACK Y SE GUARDAN EN LISTA self.listaComponente
+        #Puedes cambiar tanto el parent como el grid
+        objetoNuevo = claseBusqueda(marco00,True)
+        cont = 1
+        #Ejemplo de como se podrian sacar los componentes
+        for comp in objetoNuevo.listaComponente:
+            print comp
+            comp.grid(row=1,column=cont)
+            cont+=1
         listaSearch.append(objetoNuevo)
+
         marco00.grid(row=self.actualrow, column=0)
         self.actualrow+=1
 
