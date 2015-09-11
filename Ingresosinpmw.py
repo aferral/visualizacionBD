@@ -5,9 +5,16 @@ from Tkinter import *
 import ttk
 from Calendar import *
 import VentanaExtra
-
+from SearchCriteria import *
 
 import psycopg2
+
+queryInsertRadio = 'INSERT INTO "Radiografia"("IdRadio", "Fecha", "Zona", "Procedencia", ' \
+                '"Tipo", "Comentario", "RUNPaciente", "NombrePaciente") VALUES (%s, %s, %s, %s, %s, %s, %s, %s);'
+
+queryFiltrarPaciente = 'SELECT "Nombres","Apellidos","RUN" FROM "Paciente" '
+queryAddPaciente = 'INSERT INTO "Paciente" ("Sexo", "RUN", "Nombres", "Apellidos", "FechaNac" ) ' \
+                'VALUES (%s, %s, %s, %s, %s)'
 
 class Demo:
     def __init__(self, parent):
@@ -77,7 +84,7 @@ class Demo:
         self.notebook = Pmw.NoteBook(parent)
         self.notebook.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
-        # Add the "Gemerañ" page to the notebook.
+        # Add the "Gemeral" page to the notebook.
         self.page = self.notebook.add('General')
         self.notebook.tab('General').focus_set()
 
@@ -97,35 +104,45 @@ class Demo:
         self.nombre = Label(self.group.interior(), 
             text = 'Nombre:')
         self.nombre.grid(row=1,column=1,sticky=W, padx=5, pady=5)
+
         self.nombreentry = Entry(self.group.interior())
         self.nombreentry.grid(row=1,column=2)
+
+        self.varCheckApellidos = IntVar()
+        Checkbutton(self.group.interior(), variable=self.varCheckApellidos).grid(row=2,column=0)
+        self.apellidos = Label(self.group.interior(),
+            text = 'Apellido:')
+        self.apellidos.grid(row=2,column=1,sticky=W, padx=5, pady=5)
+
+        self.apellidoEntry = Entry(self.group.interior())
+        self.apellidoEntry.grid(row=2,column=2)
 
 
         #Button "Filtro"
         self.filtrar = Button(self.group.interior(),text="Filtrar",
-                            command= self.filtrar).grid(row=1,column=3,sticky=W, padx=5, pady=5)
+                            command= self.filtrarPaciente).grid(row=2,column=3,sticky=W, padx=5, pady=5)
 
         self.varSexo = IntVar()
-        Checkbutton(self.group.interior(), variable=self.varSexo).grid(row=2,column=0)
+        Checkbutton(self.group.interior(), variable=self.varSexo).grid(row=3,column=0)
         self.sexo= Label(self.group.interior(), 
-            text="Sexo:").grid(row=2,column=1,sticky=W, padx=5, pady=5)
+            text="Sexo:").grid(row=3,column=1,sticky=W, padx=5, pady=5)
         self.boolsexo = IntVar()
-        self.radiobuttonm=Radiobutton(self.group.interior(), text="M", variable=self.boolsexo, value=1).grid(row=2,column=2,sticky=W)
-        self.radiobuttonh=Radiobutton(self.group.interior(), text="H", variable=self.boolsexo, value=2).grid(row=2,column=2,sticky=E)
+        self.radiobuttonm=Radiobutton(self.group.interior(), text="M", variable=self.boolsexo, value=1).grid(row=3,column=2,sticky=W)
+        self.radiobuttonh=Radiobutton(self.group.interior(), text="H", variable=self.boolsexo, value=2).grid(row=3,column=2,sticky=E)
 
         self.varFechaNac = IntVar()
-        Checkbutton(self.group.interior(), variable=self.varFechaNac).grid(row=3,column=0)
-        self.fechanac= Label(self.group.interior(), text="FechaNac:").grid(row=3,column=1,sticky=W, padx=5, pady=5)
+        Checkbutton(self.group.interior(), variable=self.varFechaNac).grid(row=4,column=0)
+        self.fechanac= Label(self.group.interior(), text="FechaNac:").grid(row=4,column=1,sticky=W, padx=5, pady=5)
         self.varF0 = StringVar()
         self.varF0.set('Today')
 
-        self.fechanacdate= Label(self.group.interior(), textvariable = self.varF0).grid(row=3,column=2,sticky=W, padx=5, pady=5)
+        self.fechanacdate= Label(self.group.interior(), textvariable = self.varF0).grid(row=4,column=2,sticky=W, padx=5, pady=5)
         self.datechange0 = Button(self.group.interior(),text="Cambiar",
                             command= lambda: self.createWindowsAndBind(self.updateF0))
-        self.datechange0.grid(row=3,column=1,sticky=E, padx=5, pady=5)
+        self.datechange0.grid(row=4,column=1,sticky=E, padx=5, pady=5)
 
         self.crearPaciente = Button(self.group.interior(),text="Crear",
-                            command= self.crear).grid(row=4,column=2,sticky=E, padx=5, pady=5)
+                            command= self.crearPaciente).grid(row=5,column=2,sticky=E, padx=5, pady=5)
                 
         
         
@@ -149,7 +166,7 @@ class Demo:
         self.idsentry.grid(row=1,column=1)
 
         self.frame = Label(self.group1.interior(), 
-            text = 'Frames:').grid(row=2,column=0,sticky=W, padx=5, pady=5)
+            text = 'Frames Si es mas de uno usar (;)  :').grid(row=2,column=0,sticky=W, padx=5, pady=5)
         self.frameentry = Entry(self.group1.interior()).grid(row=2,column=1)
         
         
@@ -358,7 +375,7 @@ class Demo:
         self.buttonBox.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
         # Add some buttons to the ButtonBox.
-        self.buttonBox.add('Crear', command = self.genesisdetodo)
+        self.buttonBox.add('Crear', command = self.crearRadiografia)
 
 
         # Make all the buttons the same width.
@@ -368,11 +385,6 @@ class Demo:
         self.checkboxes=[self.var1,self.var2,self.var3,self.var4,self.var5]
 
         self.actualizaListas()
-
-    def callback(self, tag):
-        # This is called whenever the user clicks on a button
-        # in a single select RadioSelect widget.
-        print 'Button', tag, 'was pressed.'
 
     def updateF0(self,x):
         self.varF0.set(x.strftime('%Y-%m-%d'))
@@ -391,7 +403,7 @@ class Demo:
         sf = SecondFrame(Tkinter.Toplevel())
         sf.setCallback(fun)
 
-    def genesisdetodo(self):
+    def crearRadiografia(self):
         print 'You play to be GOD'
         #filtrar por los checkboxes
         #self.var1,self.var2,self.var3,self.var4,self.var5 son los Tkinter.IntVar() :D
@@ -399,51 +411,79 @@ class Demo:
         for var in self.checkboxes:
             print var.get()
 
-
-        query = 'INSERT INTO "Radiografia"("IdRadio", "Fecha", "Zona", "Procedencia", ' \
-                '"Tipo", "Comentario", "RUNPaciente", "NombrePaciente") VALUES (%s, %s, %s, %s, %s, %s, %s, %s);'
         params = (str(self.idsentry.get()),str(self.varF1.get()),str(self.zonaValue.get()),str(self.procedenciaValue.get()),
                   str(self.tipoValue.get()),str("Esto es comentaro")
                   ,str(self.pacienteValue.get().split(",")[1]),str(self.pacienteValue.get().split(",")[0]),)
-        askDb(query,params)
+        try:
+            askDb(queryInsertRadio,params)
+        except Exception, e:
+            self.statusValue.set("Status: "+str(e))
 
-    def filtrar(self):
-        #crea al paciente
+
+    def filtrarPaciente(self):
+
+        (varSexo,varRun,varNombre,varApellido,varFecha,) = self.getParamsPaciente()
+        whereString = ""
+        params = ()
+        if (varSexo != ''):
+            whereString += '"Sexo" = %s AND '
+            params = params + (str(varSexo),)
+        if (varRun != ''):
+            whereString += '"RUN" = %s AND '
+            params = params + (str(varRun),)
+        if (varNombre != ''):
+            whereString += '"Nombres" = %s AND '
+            params = params + (str(varNombre),)
+        if (varApellido != ''):
+            whereString += '"Apellidos" = %s AND '
+            params = params + (str(varApellido),)
+        if (varFecha != 'Today'):
+            whereString += '"FechaNac" < %s AND '
+            params = params + (str(varFecha),)
+        if(whereString != ""):
+            whereString = "WHERE "+whereString[:-4]
+
+
+        listRes = []
+        try:
+            listRes = askDb(queryFiltrarPaciente + whereString,params)
+        except Exception, e:
+            self.statusValue.set("Status: "+str(e))
+
+        if(len(listRes) != 0):
+            for i in range(len(listRes)):
+                listRes[i] = listRes[i][0]+","+str(listRes[i][1])
+            self.pacienteCombo['values'] = tuple(listRes)
+            self.pacienteCombo.current(0)
+
+    def getParamsPaciente(self):
         varSexo = 'M'
         if self.varSexo.get():
-            print "Filtro por sexo activado"
-            varSexo = 'M'
             if self.boolsexo.get() == 1:
                 varSexo = 'H'
-        print "Se esta creando al nuevo Paciente"
-        print "Agregando con rut ",self.runentry.get()
-        print "nombre ",self.nombreentry.get()
-        print "Sexo ",self.boolsexo.get()
-        print "FechaNac ",self.varF0.get()
+        varRun = self.runentry.get().strip()
+        varNombre = self.nombreentry.get().strip()
+        varApellido = self.apellidoEntry.get().strip()
+        varFecha = self.varF0.get().strip()
+        print "Comienzo filtro y update de ComboBox"
+        print "Agregando con rut ",varRun
+        print "nombre ",varNombre
+        print "apellido ",varApellido
+        print "Sexo ",str(varSexo)
+        print "FechaNac ",varFecha
+        return (varSexo,varRun,varNombre,varApellido,varFecha,)
 
-
-        query6 = 'SELECT "Nombre","RUN" FROM "Paciente" WHERE "Sexo" = %s ORDER BY RANDOM() LIMIT 40 '
-        listRes = askDb(query6,(str(varSexo),))
-        for i in range(len(listRes)):
-            listRes[i] = listRes[i][0]+","+str(listRes[i][1])
-        self.pacienteCombo['values'] = tuple(listRes)
-        self.pacienteCombo.current(0)
-
-    def crear(self):
+    def crearPaciente(self):
 
         #crea al paciente
-        varSexo = 'M'
-        if self.boolsexo.get() == 1:
-            varSexo = 'H'
-        print "Se esta creando al nuevo Paciente"
-        print "Agregando con rut ",self.runentry.get()
-        print "nombre ",self.nombreentry.get()
-        print "Sexo ",self.boolsexo.get()
-        print "FechaNac ",self.varF0.get()
 
-        query = 'INSERT INTO "Paciente"( "Nombre", "RUN", "FechaNac", "Sexo") VALUES (%s, %s, %s, %s)'
-        params = (str(self.nombreentry.get()),str(self.runentry.get()),str(self.varF0.get()),str(varSexo),)
-        askDb(query,params)
+
+        params = self.getParamsPaciente()
+        try:
+            askDb(queryAddPaciente,params)
+            self.statusValue.set("Status: "+"Paciente agregado")
+        except Exception, e:
+            self.statusValue.set("Status: "+str(e))
 
     def actualizaListas(self):
 
@@ -454,26 +494,19 @@ class Demo:
         query5 = 'SELECT DISTINCT "Procedencia" FROM "Radiografia" ORDER BY "Procedencia" '
 
         self.enfermedadCombo['values'] = tuple(auxProcessList(query1,""))
-        #self.enfermedadCombo.current(0)
 
         self.medicamentoCombo['values'] = tuple(auxProcessList(query2,""))
-        #self.medicamentoCombo.current(0)
 
         self.zonaCombo['values'] = tuple(auxProcessList(query3,""))
-        #self.zonaCombo.current(0)
 
         self.alergiaCombo['values'] = tuple(auxProcessList(query4,""))
-        #self.alergiaCombo.current(0)
 
         self.adiccionCombo['values'] = tuple(auxProcessList(query4,""))
-        #self.adiccionCombo.current(0)
 
         self.procedenciaCombo['values'] = tuple(auxProcessList(query5,""))
-        #self.procedenciaCombo.current(0)
 
         query6 = 'SELECT "Nombre","RUN" FROM "Paciente" ORDER BY RANDOM() LIMIT 5 '
         self.pacienteCombo['values'] = tuple(auxProcessList(query6,""))
-        #self.pacienteCombo.current(0)
 
         pass
 
@@ -526,37 +559,15 @@ class Demo:
         pass
 
 
-def auxProcessList(StringQuery,param):
-    try:
-        listRes = askDb(StringQuery,param)
+    def auxProcessList(self,StringQuery,params):
+        try:
+            listRes = askDb(StringQuery,params)
+        except Exception, e:
+            self.statusValue.set("Status: "+str(e))
 
         for i in range(len(listRes)):
             listRes[i] = listRes[i][0]
         return listRes
-    except :
-        return []
-
-def askDb(stringQuery,params):
-    result = []
-    conn = psycopg2.connect(database='radiografiasUchile',
-                            host='localhost',
-                            port=5432 ,
-                            password = '58132154',
-                            user='postgres')
-
-    cursor = conn.cursor()
-    print "String Query : ",stringQuery
-    print "Params ",params
-    cursor.execute(stringQuery,params)
-    try:
-        result = cursor.fetchall()
-    except:
-        result = []
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-    return result
     
 class PrintOne:
     def __init__(self, text):

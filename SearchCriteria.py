@@ -23,7 +23,7 @@ queryMedicamento  = 'SELECT "IdRadio" FROM "En Contexto de" JOIN "Prescripcion M
                     ' WHERE "Medicamento"."NombreMedicamento" = %s) '
 
 def askDb(stringQuery,params):
-
+    result = []
     conn = psycopg2.connect(database='radiografiasUchile',
                             host='localhost',
                             port=5432 ,
@@ -34,10 +34,16 @@ def askDb(stringQuery,params):
     print "String Query : ",stringQuery
     print "Params ",params
     cursor.execute(stringQuery,params)
-    result = cursor.fetchall()
-    cursor.close()
+    try:
+        result = cursor.fetchall()
+        print "Result: ",result
+    except Exception, e:
+        print "No cursor"
+    finally:
+        cursor.close()
+    conn.commit()
     conn.close()
-    print "Result: ",result
+
     return result
 
 def auxProcessList(StringQuery,param):
@@ -51,15 +57,21 @@ def auxProcessList(StringQuery,param):
         return []
 
 class AbstractSearchCriteria(object):
-    def __init__(self,marco):
-        self.comp = []
+    def __init__(self,marco,mode):
+        self.listaComponente = []
+        self.mode = mode #SI MODO ES TRUE SE ESPERA QUE SE GRIDEE EXTERNAMENTE TODO QUEDA EN self.listaComponente
         self.active = IntVar()
         c = Checkbutton(marco, variable=self.active)
-        c.pack(side=LEFT)
+        self.ajusta(c)
 
-        self.comp.append(c)
 
         pass
+    def ajusta(self,elemento):
+        #Usa esto si quieres gridear de forma externa
+        if (not self.mode):
+            elemento.pack(side=LEFT)
+        else:
+            self.listaComponente.append(elemento)
     def isActive(self):
         return self.active.get()
     def giveFilterResults(self):
@@ -68,13 +80,14 @@ class AbstractSearchCriteria(object):
         return self.comp
 
 class IdSearch(AbstractSearchCriteria):
-    def __init__(self,marco):
-        AbstractSearchCriteria.__init__(self, marco)
+    def __init__(self,marco,mode):
+        AbstractSearchCriteria.__init__(self, marco,mode)
         lIdRadio = Label(marco, text="IdRadio")
-        lIdRadio.pack(side=LEFT)
         self.eIdRadio = Entry(marco)
-        self.eIdRadio.pack(side=LEFT)
-        pass
+
+        self.ajusta(lIdRadio)
+        self.ajusta(self.eIdRadio)
+
     def giveFilterResults(self):
         idToSearch = self.eIdRadio.get()
         params = (str(idToSearch),)
@@ -82,12 +95,14 @@ class IdSearch(AbstractSearchCriteria):
 
 
 class NameSearch(AbstractSearchCriteria):
-    def __init__(self, marco):
-        AbstractSearchCriteria.__init__(self, marco)
+    def __init__(self, marco,modo):
+        AbstractSearchCriteria.__init__(self, marco,modo)
         lNombrePaciente = Label(marco, text="Nombre Paciente")
-        lNombrePaciente.pack(side=LEFT)
         self.eNombrePaciente = Entry(marco)
-        self.eNombrePaciente.pack(side=LEFT)
+
+        self.ajusta(lNombrePaciente)
+        self.ajusta(self.eNombrePaciente)
+
         pass
 
     def giveFilterResults(self):
@@ -95,26 +110,29 @@ class NameSearch(AbstractSearchCriteria):
         params = (str(nameToSearch),)
         return auxProcessList(queryNombresPaciente,params)
 class LastNameSearch(AbstractSearchCriteria):
-    def __init__(self, marco):
-        AbstractSearchCriteria.__init__(self, marco)
-        lNombrePaciente = Label(marco, text="Apellido Paciente")
-        lNombrePaciente.pack(side=LEFT)
-        self.eNombrePaciente = Entry(marco)
-        self.eNombrePaciente.pack(side=LEFT)
+    def __init__(self, marco,modo):
+        AbstractSearchCriteria.__init__(self, marco,modo)
+        lApellidosPaciente = Label(marco, text="Apellido Paciente")
+        self.eApellidoPaciente = Entry(marco)
+
+        self.ajusta(lApellidosPaciente)
+        self.ajusta(self.eApellidoPaciente)
+
         pass
 
     def giveFilterResults(self):
-        nameToSearch = "%"+self.eNombrePaciente.get()+"%"
+        nameToSearch = "%"+self.eApellidoPaciente.get()+"%"
         params = (str(nameToSearch),)
         return auxProcessList(queryApellidosPaciente,params)
 
 class RutSearch(AbstractSearchCriteria):
-    def __init__(self, marco):
-        AbstractSearchCriteria.__init__(self, marco)
+    def __init__(self, marco,modo):
+        AbstractSearchCriteria.__init__(self, marco,modo)
         lRutPaciente= Label(marco, text="Rut: ")
-        lRutPaciente.pack(side=LEFT)
         self.eRutPaciente = Entry(marco)
-        self.eRutPaciente.pack(side=LEFT)
+
+        self.ajusta(lRutPaciente)
+        self.ajusta(self.eRutPaciente)
         pass
     def giveFilterResults(self):
         rutToSearch = self.eRutPaciente.get()
@@ -122,13 +140,18 @@ class RutSearch(AbstractSearchCriteria):
         return auxProcessList(queryRUN,params)
 
 class SexoSearch(AbstractSearchCriteria):
-    def __init__(self,marco):
-        AbstractSearchCriteria.__init__(self, marco)
+    def __init__(self,marco,modo):
+        AbstractSearchCriteria.__init__(self, marco,modo)
         lSexo= Label(marco, text="Sexo: ")
-        lSexo.pack(side=LEFT)
+
         self.boolSexo = IntVar()
-        Radiobutton(marco, text="M", variable=self.boolSexo, value=1).pack(anchor=W)
-        Radiobutton(marco, text="H", variable=self.boolSexo, value=2).pack(anchor=W)
+        radio1 = Radiobutton(marco, text="M", variable=self.boolSexo, value=1)
+        radio2 = Radiobutton(marco, text="H", variable=self.boolSexo, value=2)
+
+        self.ajusta(lSexo)
+        self.ajusta(radio1)
+        self.ajusta(radio2)
+
         pass
     def giveFilterResults(self):
         valRadio = self.boolSexo.get()
@@ -140,24 +163,27 @@ class SexoSearch(AbstractSearchCriteria):
 
 
 class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
-    def __init__(self, marco):
-        AbstractSearchCriteria.__init__(self,marco)
+    def __init__(self, marco,modo):
+        AbstractSearchCriteria.__init__(self,marco,modo)
         marcoSelEnf = Frame(marco)
         lEnfermedad= Label(marcoSelEnf, text="Enfermedad a buscar: ")
-        lEnfermedad.pack(side=LEFT)
         self.enfermedadaValues = StringVar()
         self.comboEnfermedades = ttk.Combobox(marcoSelEnf, textvariable=self.enfermedadaValues,
                                 state='readonly')
         # self.comboEnfermedades['values'] = tuple(lista)
-        self.comboEnfermedades.pack()
-        marcoSelEnf.pack()
 
         marcoConf = Frame(marco)
         self.varSi = IntVar()
-        Radiobutton(marco, text="Confirmado", variable=self.varSi, value=1).pack(anchor=W)
-        Radiobutton(marco, text="Sospechoso", variable=self.varSi, value=2).pack(anchor=W)
+        r1 = Radiobutton(marco, text="Confirmado", variable=self.varSi, value=1)
+        r2 = Radiobutton(marco, text="Sospechoso", variable=self.varSi, value=2)
 
-        marcoConf.pack()
+
+        self.ajusta(lEnfermedad)
+        self.ajusta(self.comboEnfermedades)
+        self.ajusta(marcoSelEnf)
+        self.ajusta(r1)
+        self.ajusta(r2)
+        self.ajusta(marcoConf)
 
         pass
 
@@ -169,15 +195,17 @@ class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
         return auxProcessList(queryEnfermedad, params)
 
 class TipoRadioSearch(AbstractSearchCriteria):
-    def __init__(self,marco):
-        AbstractSearchCriteria.__init__(self,marco)
+    def __init__(self,marco,modo):
+        AbstractSearchCriteria.__init__(self,marco,modo)
         lTipoRadiografia= Label(marco, text="Tipo de radiografia: ")
-        lTipoRadiografia.pack(side=LEFT)
         self.tipoRadiografiaValues = StringVar()
         comboTipoRadiografia = ttk.Combobox(marco, textvariable=self.tipoRadiografiaValues,
                                 state='readonly')
         comboTipoRadiografia['values'] = ('Radiografia', 'Escaner', 'Resonancia')
-        comboTipoRadiografia.pack()
+
+
+        self.ajusta(lTipoRadiografia)
+        self.ajusta(comboTipoRadiografia)
 
         pass
     def giveFilterResults(self):
@@ -186,8 +214,8 @@ class TipoRadioSearch(AbstractSearchCriteria):
         return auxProcessList(queryTipoRadio,params)
 
 class FechaSearch(AbstractSearchCriteria): # Va rango de fechas
-    def __init__(self,marco):
-        AbstractSearchCriteria.__init__(self,marco)
+    def __init__(self,marco,modo):
+        AbstractSearchCriteria.__init__(self,marco,modo)
 
         #Fecha inicio
         marcoF0 = Frame(marco)
@@ -200,7 +228,7 @@ class FechaSearch(AbstractSearchCriteria): # Va rango de fechas
         self.buttonF0 = Button(marcoF0,text="Cambiar", command= lambda: self.createWindowsAndBind(self.updateF0))
         self.buttonF0.pack(side=LEFT)
 
-        marcoF0.pack()
+        self.ajusta(marcoF0)
 
 
         marcoFf = Frame(marco)
@@ -215,7 +243,7 @@ class FechaSearch(AbstractSearchCriteria): # Va rango de fechas
         self.buttonFf = Button(marcoFf,text="Cambiar", command= lambda: self.createWindowsAndBind(self.updateFf))
         self.buttonFf.pack(side=LEFT)
 
-        marcoFf.pack()
+        self.ajusta(marcoFf)
         pass
     def updateF0(self,x):
         self.varF0.set(x.strftime('%Y-%m-%d'))
@@ -232,26 +260,27 @@ class FechaSearch(AbstractSearchCriteria): # Va rango de fechas
         return auxProcessList(queryFechas,params)
 
 class FumaSearch(AbstractSearchCriteria):
-    def __init__(self,marco):
-        AbstractSearchCriteria.__init__(self,marco)
+    def __init__(self,marco,modo):
+        AbstractSearchCriteria.__init__(self,marco,modo)
         lConfirmado = Label(marco,text="Fuma ? ")
-        lConfirmado.pack(side=LEFT)
+        self.ajusta(lConfirmado)
         pass
     def giveFilterResults(self):
         params = ('Tabaco',)
         return auxProcessList(queryFuma,params)
 
 class MedicamentoSearch(AbstractSearchCriteria):
-    def __init__(self,marco):
-        AbstractSearchCriteria.__init__(self,marco)
+    def __init__(self,marco,modo):
+        AbstractSearchCriteria.__init__(self,marco,modo)
 
         lMedicamento= Label(marco, text="Medicamento a buscar: ")
-        lMedicamento.pack(side=LEFT)
         self.medicamentoValues = StringVar()
         self.comboMedicamento = ttk.Combobox(marco, textvariable=self.medicamentoValues,
                                 state='readonly')
         # self.comboMedicamento['values'] = tuple(lista)
-        self.comboMedicamento.pack()
+
+        self.ajusta(lMedicamento)
+        self.ajusta(self.comboMedicamento)
 
         pass
 

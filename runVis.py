@@ -117,7 +117,7 @@ class GraficInterfaceDb:
         #Ejemplo de como se podrian sacar los componentes
         for comp in objetoNuevo.listaComponente:
             print comp
-            comp.grid(row=1,column=cont)
+            comp.grid(row=cont,column=cont)
             cont+=1
         listaSearch.append(objetoNuevo)
 
