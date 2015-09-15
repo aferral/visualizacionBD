@@ -10,7 +10,7 @@ from SearchCriteria import *
 import psycopg2
 
 queryInsertRadio = 'INSERT INTO "Radiografia"("IdRadio", "Fecha", "Zona", "Procedencia", ' \
-                '"Tipo", "Comentario", "RUNPaciente", "NombrePaciente") VALUES (%s, %s, %s, %s, %s, %s, %s, %s);'
+                '"Tipo", "Comentario", "RUNPaciente", "NombresPaciente") VALUES (%s, %s, %s, %s, %s, %s, %s, %s);'
 
 queryFiltrarPaciente = 'SELECT "Nombres","Apellidos","RUN" FROM "Paciente" '
 queryAddPaciente = 'INSERT INTO "Paciente" ("Sexo", "RUN", "Nombres", "Apellidos", "FechaNac" ) ' \
@@ -92,15 +92,15 @@ class Demo:
         self.group = Pmw.Group(self.page, tag_text = 'Paciente')
         self.group.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
-        self.varCheckRut = IntVar()
-        Checkbutton(self.group.interior(), variable=self.varCheckRut).grid(row=0,column=0)
+        #self.varCheckRut = IntVar()
+        #Checkbutton(self.group.interior(), variable=self.varCheckRut).grid(row=0,column=0)
         self.run = Label(self.group.interior(), 
             text = 'RUT:').grid(row=0,column=1,sticky=W, padx=5, pady=5)
         self.runentry = Entry(self.group.interior())
         self.runentry.grid(row=0,column=2)
         
-        self.varCheckNombre = IntVar()
-        Checkbutton(self.group.interior(), variable=self.varCheckNombre).grid(row=1,column=0)
+        #self.varCheckNombre = IntVar()
+        #Checkbutton(self.group.interior(), variable=self.varCheckNombre).grid(row=1,column=0)
         self.nombre = Label(self.group.interior(), 
             text = 'Nombre:')
         self.nombre.grid(row=1,column=1,sticky=W, padx=5, pady=5)
@@ -108,8 +108,8 @@ class Demo:
         self.nombreentry = Entry(self.group.interior())
         self.nombreentry.grid(row=1,column=2)
 
-        self.varCheckApellidos = IntVar()
-        Checkbutton(self.group.interior(), variable=self.varCheckApellidos).grid(row=2,column=0)
+        #self.varCheckApellidos = IntVar()
+        #Checkbutton(self.group.interior(), variable=self.varCheckApellidos).grid(row=2,column=0)
         self.apellidos = Label(self.group.interior(),
             text = 'Apellido:')
         self.apellidos.grid(row=2,column=1,sticky=W, padx=5, pady=5)
@@ -122,16 +122,16 @@ class Demo:
         self.filtrar = Button(self.group.interior(),text="Filtrar",
                             command= self.filtrarPaciente).grid(row=2,column=3,sticky=W, padx=5, pady=5)
 
-        self.varSexo = IntVar()
-        Checkbutton(self.group.interior(), variable=self.varSexo).grid(row=3,column=0)
+        #self.varSexo = IntVar()
+        #Checkbutton(self.group.interior(), variable=self.varSexo).grid(row=3,column=0)
         self.sexo= Label(self.group.interior(), 
             text="Sexo:").grid(row=3,column=1,sticky=W, padx=5, pady=5)
         self.boolsexo = IntVar()
         self.radiobuttonm=Radiobutton(self.group.interior(), text="M", variable=self.boolsexo, value=1).grid(row=3,column=2,sticky=W)
         self.radiobuttonh=Radiobutton(self.group.interior(), text="H", variable=self.boolsexo, value=2).grid(row=3,column=2,sticky=E)
 
-        self.varFechaNac = IntVar()
-        Checkbutton(self.group.interior(), variable=self.varFechaNac).grid(row=4,column=0)
+        #self.varFechaNac = IntVar()
+        #Checkbutton(self.group.interior(), variable=self.varFechaNac).grid(row=4,column=0)
         self.fechanac= Label(self.group.interior(), text="FechaNac:").grid(row=4,column=1,sticky=W, padx=5, pady=5)
         self.varF0 = StringVar()
         self.varF0.set('Today')
@@ -149,7 +149,7 @@ class Demo:
         
 
         # Create the "Radiografia" contents of the page.
-        self.group1 = Pmw.Group(self.page, tag_text = 'Radiografia')
+        self.group1 = Pmw.Group(self.page, tag_text = 'Radiografia **Todos los campos son obligatorios')
         self.group1.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
         self.paciente= Label(self.group1.interior(), text="Paciente:").grid(row=0,column=0,sticky=W, padx=5, pady=5)
@@ -432,11 +432,11 @@ class Demo:
             whereString += '"RUN" = %s AND '
             params = params + (str(varRun),)
         if (varNombre != ''):
-            whereString += '"Nombres" = %s AND '
-            params = params + (str(varNombre),)
+            whereString += '"Nombres" LIKE %s AND '
+            params = params + ("%"+str(varNombre)+"%",)
         if (varApellido != ''):
-            whereString += '"Apellidos" = %s AND '
-            params = params + (str(varApellido),)
+            whereString += '"Apellidos" LIKE %s AND '
+            params = params + ("%"+str(varApellido)+"%",)
         if (varFecha != 'Today'):
             whereString += '"FechaNac" < %s AND '
             params = params + (str(varFecha),)
@@ -449,16 +449,17 @@ class Demo:
             listRes = askDb(queryFiltrarPaciente + whereString,params)
         except Exception, e:
             self.statusValue.set("Status: "+str(e))
-
-        if(len(listRes) != 0):
+        if len(listRes) == 0:
+            listRes = ["No hay resultados"]
+        else:
             for i in range(len(listRes)):
                 listRes[i] = listRes[i][0]+","+str(listRes[i][1])
-            self.pacienteCombo['values'] = tuple(listRes)
-            self.pacienteCombo.current(0)
+        self.pacienteCombo['values'] = tuple(listRes)
+        self.pacienteCombo.current(0)
 
     def getParamsPaciente(self):
         varSexo = 'M'
-        if self.varSexo.get():
+        if self.boolsexo.get():
             if self.boolsexo.get() == 1:
                 varSexo = 'H'
         varRun = self.runentry.get().strip()
@@ -466,7 +467,7 @@ class Demo:
         varApellido = self.apellidoEntry.get().strip()
         varFecha = self.varF0.get().strip()
         print "Comienzo filtro y update de ComboBox"
-        print "Agregando con rut ",varRun
+        print "Rut ",varRun
         print "nombre ",varNombre
         print "apellido ",varApellido
         print "Sexo ",str(varSexo)
