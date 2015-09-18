@@ -6,6 +6,7 @@ import ttk
 from Calendar import *
 import VentanaExtra
 from SearchCriteria import *
+from fillDb import *
 
 import psycopg2
 
@@ -15,7 +16,13 @@ queryInsertRadio = 'INSERT INTO "Radiografia"("IdRadio", "Fecha", "Zona", "Proce
 queryFiltrarPaciente = 'SELECT "Nombres","Apellidos","RUN" FROM "Paciente" '
 queryAddPaciente = 'INSERT INTO "Paciente" ("Sexo", "RUN", "Nombres", "Apellidos", "FechaNac" ) ' \
                 'VALUES (%s, %s, %s, %s, %s)'
+queryAddEnfToRad = 'INSERT INTO "Representa"( "NombreE", "Confirmado","IdRadio") VALUES (%s, %s, %s);'
 
+queryAddFrame = 'INSERT INTO "Frames"( "NumOfFrame", "IdRadio") VALUES (%s, %s);'
+
+
+queryAddAntece = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
+ 'VALUES (DEFAULT) RETURNING "IdAntecedentes";'
 class Demo:
     def __init__(self, parent):
         self.currentIdRadio = None
@@ -165,26 +172,33 @@ class Demo:
         self.idsentry = Entry(self.group1.interior())
         self.idsentry.grid(row=1,column=1)
 
-        self.frame = Label(self.group1.interior(), 
-            text = 'Frames Si es mas de uno usar (;)  :').grid(row=2,column=0,sticky=W, padx=5, pady=5)
-        self.frameentry = Entry(self.group1.interior()).grid(row=2,column=1)
+
         
-        
-        self.enfermedad= Label(self.group1.interior(), text="Enfermedad:").grid(row=3,column=0,sticky=W, padx=5, pady=5)
+
+        self.groupEnf = Pmw.Group(self.group1.interior(), tag_text = 'Enfermedad')
+        self.groupEnf.grid(row=2,column=0)
+        self.enfermedad= Label(self.groupEnf.interior(), text="Enfermedad:").grid(row=0,column=2, padx=5, pady=5)
         self.enfermedadValue = StringVar()
-        self.enfermedadCombo = ttk.Combobox(self.group1.interior(), textvariable=self.enfermedadValue,
+        self.enfermedadCombo = ttk.Combobox(self.groupEnf.interior(), textvariable=self.enfermedadValue,
                                 state='readonly')
-        self.enfermedadCombo['values'] = ('Enfermedad1', 'Enfermedad2', 'Enfermedad3', 'Enfermedad4')
-        self.enfermedadCombo.current(0)
-        self.enfermedadCombo.grid(row=3,column=1)
+        self.enfermedadCombo.grid(row=0,column=2)
+
+        enfButtonPlus = Button(self.groupEnf.interior(),text="+",
+                            command= lambda: self.plusField(self.enfArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+        enfButtonMinus = Button(self.groupEnf.interior(),text="-",
+                            command= lambda: self.minus(self.enfArray)).grid(row=0,column=4,sticky=E, padx=5, pady=5)
+
+        self.frame = Label(self.group1.interior(),
+            text = 'Frames Si es mas de uno usar (;)  :').grid(row=3,column=0,sticky=W, padx=5, pady=5)
+        self.frameentry = Entry(self.group1.interior())
+        self.frameentry.grid(row=3,column=1)
 
         # Create and pack the dropdown ComboBox.
         self.zona= Label(self.group1.interior(), text="Zona:").grid(row=4,column=0,sticky=W, padx=5, pady=5)
         self.zonaValue = StringVar()
         self.zonaCombo = ttk.Combobox(self.group1.interior(), textvariable=self.zonaValue,
                                 state='readonly')
-        self.zonaCombo['values'] = ('cornsilk1', 'snow1', 'seashell1', 'antiquewhite1')
-        self.zonaCombo.current(0)
+
         self.zonaCombo.grid(row=4,column=1)
 
         
@@ -211,8 +225,6 @@ class Demo:
         self.procedenciaValue = StringVar()
         self.procedenciaCombo = ttk.Combobox(self.group1.interior(), textvariable=self.procedenciaValue,
                                 state='readonly')
-        self.procedenciaCombo['values'] = ('Ambulatorio', 'procedencia1', 'procedencia2')
-        self.procedenciaCombo.current(0)
         self.procedenciaCombo.grid(row=7,column=1)
 
         
@@ -234,15 +246,16 @@ class Demo:
         self.groupTrabajo = Pmw.Group(self.page1, tag_text = 'Trabajo')
         self.groupTrabajo.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
         
-        self.var1 = IntVar()
-        Checkbutton(self.groupTrabajo.interior(), variable=self.var1).grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        self.checkTrabajo = IntVar()
+        Checkbutton(self.groupTrabajo.interior(), variable=self.checkTrabajo).grid(row=0,column=0,sticky=W, padx=5, pady=5)
 
         self.trabajo = Label(self.groupTrabajo.interior(), 
                 text = 'Trabajo:').grid(row=0,column=1,sticky=W, padx=5, pady=5)
-        self.trabjoentry = Entry(self.groupTrabajo.interior()).grid(row=0,column=2)
+        self.varTrabajo = StringVar()
+        self.trabjoentry = Entry(self.groupTrabajo.interior(),textvariable = self.varTrabajo).grid(row=0,column=2)
 
         self.buttonTrabajoplus = Button(self.groupTrabajo.interior(),text="+",
-                            command= lambda: self.plusEntry(self.trabajoArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+                            command= lambda: self.plusField(self.trabajoArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
         self.buttonTrabajominus = Button(self.groupTrabajo.interior(),text="-",
                             command= lambda: self.minus(self.trabajoArray)).grid(row=0,column=4,sticky=E, padx=5, pady=5)
         ######################################################################
@@ -252,19 +265,18 @@ class Demo:
         self.groupMedicamentos = Pmw.Group(self.page1, tag_text = 'Medicamentos')
         self.groupMedicamentos.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
         
-        self.var2 = IntVar()
-        Checkbutton(self.groupMedicamentos.interior(), variable=self.var2).grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        self.checkMed = IntVar()
+        Checkbutton(self.groupMedicamentos.interior(), variable=self.checkMed).grid(row=0,column=0,sticky=W, padx=5, pady=5)
 
         self.medicamentos= Label(self.groupMedicamentos.interior(), text="Medicamentos:").grid(row=0,column=1,sticky=W, padx=5, pady=5)
         self.medicamentoValue = StringVar()
         self.medicamentoCombo = ttk.Combobox(self.groupMedicamentos.interior(), textvariable=self.medicamentoValue,
                                 state='readonly')
-        self.medicamentoCombo['values'] = ('ibuprofeno','etc')
-        self.medicamentoCombo.current(0)
+
         self.medicamentoCombo.grid(row=0,column=2)
         
         self.buttonMedicamentosplus = Button(self.groupMedicamentos.interior(),text="+",
-                            command= lambda: self.plusCombo(self.medicamentoArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+                            command= lambda: self.plusField(self.medicamentoArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
         self.buttonMedicamentosminus = Button(self.groupMedicamentos.interior(),text="-",
                             command= lambda: self.minus(self.medicamentoArray)).grid(row=0,column=4,sticky=E, padx=5, pady=5)
         #########################################################################
@@ -274,19 +286,18 @@ class Demo:
         self.groupAlergia = Pmw.Group(self.page1, tag_text = 'Alergia')
         self.groupAlergia.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
         
-        self.var3 = IntVar()
-        Checkbutton(self.groupAlergia.interior(), variable=self.var3).grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        self.checkAlergia = IntVar()
+        Checkbutton(self.groupAlergia.interior(), variable=self.checkAlergia).grid(row=0,column=0,sticky=W, padx=5, pady=5)
         
         self.alergia= Label(self.groupAlergia.interior(), text="Alergias:").grid(row=0,column=1,sticky=W, padx=5, pady=5)
         self.alergiaValue = StringVar()
         self.alergiaCombo = ttk.Combobox(self.groupAlergia.interior(), textvariable=self.alergiaValue,
                                 state='readonly')
-        self.alergiaCombo['values'] = ('bichos','etc')
-        self.alergiaCombo.current(0)
+
         self.alergiaCombo.grid(row=0,column=2)
 
         self.buttonAlergiaplus = Button(self.groupAlergia.interior(),text="+",
-                            command= lambda: self.plusCombo(self.alergiaArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+                            command= lambda: self.plusField(self.alergiaArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
         self.buttonAlergiaminus = Button(self.groupAlergia.interior(),text="-",
                             command= lambda: self.minus(self.alergiaArray)).grid(row=0,column=4,sticky=E, padx=5, pady=5)
         ##########################################################################
@@ -296,56 +307,42 @@ class Demo:
         self.groupAdiccion = Pmw.Group(self.page1, tag_text = 'Adiccion')
         self.groupAdiccion.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
         
-        self.var4 = IntVar()
-        Checkbutton(self.groupAdiccion.interior(), variable=self.var4).grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        self.checkAdiccion = IntVar()
+        Checkbutton(self.groupAdiccion.interior(), variable=self.checkAdiccion).grid(row=0,column=0,sticky=W, padx=5, pady=5)
         
         self.adiccion= Label(self.groupAdiccion.interior(), text="Adiccion:").grid(row=0,column=1,sticky=W, padx=5, pady=5)
         self.adiccionValue = StringVar()
         self.adiccionCombo = ttk.Combobox(self.groupAdiccion.interior(), textvariable=self.adiccionValue,
                                 state='readonly')
-        self.adiccionCombo['values'] = ('PastaBase','etc')
-        self.adiccionCombo.current(0)
+
         self.adiccionCombo.grid(row=0,column=2)
 
         self.buttonAdiccionplus = Button(self.groupAdiccion.interior(),text="+",
-                            command= lambda: self.plusCombo(self.adiccionArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+                            command= lambda: self.plusField(self.adiccionArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
         self.buttonAdiccionminus = Button(self.groupAdiccion.interior(),text="-",
                             command= lambda: self.minus(self.adiccionArray)).grid(row=0,column=4,sticky=E, padx=5, pady=5)
         ########################################################################
 
-        
-        self.comentario1 = Label(self.groupAdiccion.interior(), 
-                text = 'Comentario:').grid(row=4,column=0,sticky=W, padx=5, pady=5)
-        self.comentarioentry1 = Entry(self.groupAdiccion.interior()).grid(row=4,column=1)
-        #########################################################################
-        #Declarar arreglos para multiplicar basuras
-        #########################################################################
-        #Obj1.grid_forget()
+        self.groupComentario = Pmw.Group(self.page1, tag_text = 'Comentario')
+        self.groupComentario.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
+        self.checkComentario = IntVar()
+        Checkbutton(self.groupComentario.interior(), variable=self.checkComentario).grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        self.comentario1 = Label(self.groupComentario.interior(),
+                text = 'Comentario:').grid(row=0,column=1,sticky=W, padx=5, pady=5)
+        self.comentarioentry1 = Entry(self.groupComentario.interior())
+        self.comentarioentry1.grid(row=0,column=3)
 
-        #Agrupar cada cosa por su propio grupo
-        self.medicamentoVar=[self.medicamentoValue]
-        self.alergiaVar=[self.alergiaValue]
-        self.adiccionVar=[self.adiccionValue]
-        
+       #########################################################################
 
-        self.trabajoArray=[0,0,self.groupTrabajo,self.trabjoentry]
-        self.medicamentoArray=[1,self.medicamentoVar,self.groupMedicamentos,self.medicamentoCombo]
-        self.alergiaArray=[2,self.alergiaVar,self.groupAlergia,self.alergiaCombo]
-        self.adiccionArray=[3,self.adiccionVar,self.groupAdiccion,self.adiccionCombo]
-
-
-
-        #########################################################################
-        
 
         self.group3 = Pmw.Group(self.page1, tag_text = 'Intervenciones')
         self.group3.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
-        self.var5 = IntVar()
-        Checkbutton(self.group3.interior(), variable=self.var5).grid(row=0,column=0,sticky=W, padx=5, pady=5)
-        
+        self.checkIntervencion = IntVar()
+        Checkbutton(self.group3.interior(), variable=self.checkIntervencion).grid(row=0,column=0,sticky=W, padx=5, pady=5)
 
-        self.fechaint = Label(self.group3.interior(), 
+
+        self.fechaint = Label(self.group3.interior(),
                 text = 'Fecha:').grid(row=0,column=1,sticky=W, padx=5, pady=5)
         self.varF2 = StringVar()
         self.varF2.set('Today')
@@ -353,13 +350,15 @@ class Demo:
         self.fechaintbutton = Button(self.group3.interior(),text="Cambiar",
                             command= lambda: self.createWindowsAndBind(self.updateF2)).grid(row=0,column=2,sticky=E, padx=5, pady=5)
 
-        self.nombreop = Label(self.group3.interior(), 
+        self.nombreop = Label(self.group3.interior(),
                 text = 'Nombre Intervencion:').grid(row=1,column=1,sticky=W, padx=5, pady=5)
-        self.nombreopentry = Entry(self.group3.interior()).grid(row=1,column=2)
+        self.nombreopentry = Entry(self.group3.interior())
+        self.nombreopentry.grid(row=1,column=2)
 
-        self.doc = Label(self.group3.interior(), 
+        self.doc = Label(self.group3.interior(),
                 text = 'Doctor:').grid(row=2,column=1,sticky=W, padx=5, pady=5)
-        self.docentry = Entry(self.group3.interior()).grid(row=2,column=2)
+        self.docentry = Entry(self.group3.interior())
+        self.docentry.grid(row=2,column=2)
 
         self.notebook.setnaturalsize()
 
@@ -367,7 +366,34 @@ class Demo:
         self.statusValue.set("Status:")
         self.status = Label(parent,textvariable=self.statusValue).pack()
 
+       #########################################################################
+       #########################################################################
 
+        self.checkIntervencion
+
+        #Agrupar cada cosa por su propio grupo
+        self.listaVarEnf = [self.enfermedadValue]
+        self.listaVarTrabajo=[self.varTrabajo]
+        self.listaVarmedicamento=[self.medicamentoValue]
+        self.listaVaralergia=[self.alergiaValue]
+        self.listaVaradiccion=[self.adiccionValue]
+
+        listaEnfCombo = [self.enfermedadCombo]
+        listaTrabajoEntrys = [self.trabjoentry]
+        listaMedCombo = [self.medicamentoCombo]
+        listaAlergiaCombo = [self.alergiaCombo]
+        listaAdiccionCombo = [self.adiccionCombo]
+        
+        self.enfArray = [4, self.listaVarEnf, self.groupEnf, listaEnfCombo]
+
+        #Antecedentes
+        self.trabajoArray = [0, self.listaVarTrabajo, self.groupTrabajo, listaTrabajoEntrys,self.checkTrabajo]
+        self.medicamentoArray = [1, self.listaVarmedicamento, self.groupMedicamentos, listaMedCombo,self.checkMed]
+        self.alergiaArray = [2, self.listaVaralergia, self.groupAlergia, listaAlergiaCombo,self.checkAlergia]
+        self.adiccionArray = [3, self.listaVaradiccion, self.groupAdiccion, listaAdiccionCombo,self.checkAdiccion]
+
+       #########################################################################
+       #########################################################################
 
 
         # Create and pack the ButtonBox.
@@ -386,12 +412,12 @@ class Demo:
         self.buttonBox.alignbuttons()
 
 
-        self.checkboxes=[self.var1,self.var2,self.var3,self.var4,self.var5]
+
 
         self.actualizaListas()
     def getCurrentIdRadio(self):
         return self.currentIdRadio
-    def updateCurrentIdRadio(self,newId):
+    def setCurrentIdRadio(self,newId):
         self.currentIdRadio = newId
     def updateF0(self,x):
         self.varF0.set(x.strftime('%Y-%m-%d'))
@@ -411,20 +437,101 @@ class Demo:
         sf.setCallback(fun)
 
     def crearRadiografia(self):
-        #filtrar por los checkboxes
-        #self.var1,self.var2,self.var3,self.var4,self.var5 son los Tkinter.IntVar() :D
-        #hacer el filtro de que se crea
-        for var in self.checkboxes:
-            print var.get()
 
-        params = (str(self.idsentry.get()),str(self.varF1.get()),str(self.zonaValue.get()),str(self.procedenciaValue.get()),
-                  str(self.tipoValue.get()),str(self.comentarioentry0.get()),str(self.pacienteValue.get().split(",")[2])
-                  ,str(self.pacienteValue.get().split(",")[0]),str(self.pacienteValue.get().split(",")[1]),)
+        try:
+            params = (str(self.idsentry.get()),str(self.varF1.get()),str(self.zonaValue.get()),str(self.procedenciaValue.get()),
+                      str(self.tipoValue.get()),str(self.comentarioentry0.get()),str(self.pacienteValue.get().split(",")[2])
+                      ,str(self.pacienteValue.get().split(",")[0]),str(self.pacienteValue.get().split(",")[1]),)
+        except Exception, e :
+            self.statusValue.set("Status: "+"Todo los campos deben rellenarse")
+            return
         try:
             askDb(queryInsertRadio,params)
             self.statusValue.set("Status: "+"Radiografia agregada")
         except Exception, e:
             self.statusValue.set("Status: "+str(e))
+
+        #Setea que estamos usando esta id
+        self.setCurrentIdRadio(self.idsentry.get())
+
+        #Agrega las distintas enfermedades y los distintos frames
+        for enfVar in self.enfArray[1]:
+            askDb(queryAddEnfToRad, (str(enfVar.get()),True,str(self.getCurrentIdRadio()),))
+
+        #Agrega los distintos frames
+        listaDeFrames = self.frameentry.get().split(";")
+        for elem in listaDeFrames:
+            stringTemp = elem.strip()
+            askDb(queryAddFrame,(stringTemp,str(self.getCurrentIdRadio())))
+
+        #Comienza agregar antecedentes
+
+        #Por todos los antecedentes
+
+        #Generar un trabajo si esta activado
+
+        if(self.trabajoArray[4].get() == 1):
+            print "Ahora tenemos activado el checkboxTrabajo"
+            for varTrabajo in self.trabajoArray[1]:
+                idCreated = generarTrabajo(True,trabajo=varTrabajo.get())
+                joinAntecedenteRadiografia(idCreated,self.getCurrentIdRadio())
+        #Generar un medicamento si esta activado
+        if(self.medicamentoArray[4].get() == 1):
+            print "Ahora tenemos activado el checkboxMedicamenteo"
+            for varMed in self.medicamentoArray[1]:
+                #Debo buscar id Correpondiente a seleccion
+                queryIdMed = 'SELECT "IdMedicamento" FROM "Medicamento" WHERE "NombreMedicamento" = %s '
+                params = (varMed.get(),)
+                idMed = askDb(queryIdMed,params)[0][0]
+                print "Id med resultante "+str(idMed)
+                idCreated = generarMedPres(True,idMed=str(idMed))
+                joinAntecedenteRadiografia(idCreated,self.getCurrentIdRadio())
+        #Generar un alergia si esta activado
+        if(self.adiccionArray[4].get() == 1):
+            print "Ahora tenemos activado el checkBoxAdiccioon"
+            for varAdic in self.adiccionArray[1]:
+                #Debo buscar id Correpondiente a seleccion
+                queryIdAdiccion = 'SELECT "IdSustanciaAdiccion" FROM "SustanciaAdiccion" WHERE "NombreSustanciaAdiccion" = %s '
+                params = (varAdic.get(),)
+                idAdiccion = askDb(queryIdAdiccion,params)[0][0]
+                print "Id adiccion resultante "+str(idAdiccion)
+                idCreated = generaraUnAdiccion(1,1,True,idSus = str(idAdiccion),month='2')
+                joinAntecedenteRadiografia(idCreated,self.getCurrentIdRadio())
+
+        #Generar un adiccion si esta activado
+        if(self.alergiaArray[4].get() == 1):
+            print "Ahora tenemos activado el checkboxAlergia"
+            for varAlergia in self.alergiaArray[1]:
+                #Debo buscar id Correpondiente a seleccion
+                queryIdAlergia = 'SELECT "IdSustanciaAlergia" FROM "SustanciaAlergia" WHERE "NombreSustanciaAlergia" = %s'
+                params = (varAlergia.get(),)
+                idAlergia = askDb(queryIdAlergia,params)[0][0]
+                print "Id alergia resultante "+str(idAlergia)
+                idCreated = generaraUnAlergico(1,1,True,idSus= str(idAlergia) )
+                joinAntecedenteRadiografia(idCreated,self.getCurrentIdRadio())
+
+        #Generar un intervencion si esta activado
+        if self.checkIntervencion.get() == 1:
+            idCreated = generaraUnIntervencion(True,date = self.varF2.get(), operation = self.nombreopentry.get(), dr = self.docentry.get())
+            joinAntecedenteRadiografia(idCreated,self.getCurrentIdRadio())
+        #Generar comentario
+        if self.checkComentario.get() == 1:
+            idCreated = generarUnComentario(True,comment=self.comentarioentry1.get())
+            joinAntecedenteRadiografia(idCreated,self.getCurrentIdRadio())
+
+
+
+
+    def processUnaryAntecedente(self,lista,query):
+        if(lista[4].get() == 1): #Ve si esta activada checkbox
+            #Consigue todos los rellenos de X
+            for varString in self.trabajoArray[1]:
+                #Agrega nuevo antecedente y consige esa id
+                idJustAdded = askDb(queryAddAntece, '')[0][0]
+                #Envia solicitud sql de X y anexa a idRadio actual
+                params = (idJustAdded,varString.get(),)
+                askDb(query,params)
+
 
 
     def filtrarPaciente(self):
@@ -495,26 +602,33 @@ class Demo:
 
     def actualizaListas(self):
 
-        query1 =  'SELECT DISTINCT "NombreE" FROM "Enfermedad" ORDER BY "NombreE" '
-        query2 =  'SELECT "NombreMedicamento" FROM "Medicamento" '
-        query3 =  'SELECT DISTINCT "Zona" FROM "Radiografia" ORDER BY "Zona" '
-        query4 =  'SELECT DISTINCT "NombreSustancia" FROM "Sustancia" ORDER BY "NombreSustancia" '
-        query5 = 'SELECT DISTINCT "Procedencia" FROM "Radiografia" ORDER BY "Procedencia" '
+        queryEnfName =  'SELECT DISTINCT "NombreE" FROM "Enfermedad" ORDER BY "NombreE" '
+        queryMedName =  'SELECT "NombreMedicamento" FROM "Medicamento" '
+        queryRadiZone =  'SELECT DISTINCT "Zona" FROM "Radiografia" ORDER BY "Zona" '
+        querySustanciaAlergia =  'SELECT DISTINCT "NombreSustanciaAlergia" FROM "SustanciaAlergia" ORDER BY "NombreSustanciaAlergia" '
+        querySustanciaAdiccion =  'SELECT DISTINCT "NombreSustanciaAdiccion" FROM "SustanciaAdiccion" ORDER BY "NombreSustanciaAdiccion" '
+        queryProcedencia = 'SELECT DISTINCT "Procedencia" FROM "Radiografia" ORDER BY "Procedencia" '
 
-        self.enfermedadCombo['values'] = tuple(auxProcessList(query1,""))
+        listaEnf = auxProcessList(queryEnfName,"")
+        for combo in self.enfArray[3]:
+            combo['values'] = tuple(listaEnf)
 
-        self.medicamentoCombo['values'] = tuple(auxProcessList(query2,""))
+        listaMed = auxProcessList(queryMedName,"")
+        for combo in self.medicamentoArray[3]:
+            combo['values'] = tuple(listaMed)
 
-        self.zonaCombo['values'] = tuple(auxProcessList(query3,""))
+        self.zonaCombo['values'] = tuple(auxProcessList(queryRadiZone,""))
 
-        self.alergiaCombo['values'] = tuple(auxProcessList(query4,""))
+        listaAlerg = auxProcessList(querySustanciaAlergia,"")
+        for combo in self.alergiaArray[3]:
+            combo['values'] = tuple(listaAlerg)
 
-        self.adiccionCombo['values'] = tuple(auxProcessList(query4,""))
+        listaAdiccion = auxProcessList(querySustanciaAdiccion,"")
+        for combo in self.adiccionArray[3]:
+            combo['values'] = tuple(listaAdiccion)
 
-        self.procedenciaCombo['values'] = tuple(auxProcessList(query5,""))
+        self.procedenciaCombo['values'] = tuple(auxProcessList(queryProcedencia,""))
 
-        query6 = 'SELECT "Nombre","RUN" FROM "Paciente" ORDER BY RANDOM() LIMIT 5 '
-        self.pacienteCombo['values'] = tuple(auxProcessList(query6,""))
 
         pass
 
@@ -526,44 +640,27 @@ class Demo:
     def execute(self):
         self.about.show()
 
-    def plusCombo(self,aArray):
+    def plusField(self,aArray):
         n=aArray[0]
         aVariable = StringVar()
-        aCombo =ttk.Combobox(aArray[2].interior(), textvariable=aVariable,
-                                state='readonly')
-        #######Relleno segun tipo, puse n =0 de pajero, seguramente tendre que poner en [0] el tipo
-        #####0 = trabajo(no se usa)
-        #####1 = medicamento
-        #####2 = alergia
-        #####3 = adiccion
-        
-        if (n==1):
-            aCombo['values'] = ('ibuprofeno', 'aspirina', 'etc')
-        if (n==2):
-            aCombo['values'] = ('queso', 'bichos', 'plata')
-        if (n==3):
-            aCombo['values'] = ('pastaBase','Alcohol','asdasd')
-        aCombo.current(0)
-        aCombo.grid(row=len(aArray)-3,column=2, padx=5, pady=5)
-        aArray.append(aCombo)
+        widgetToAdd = None
+        if (n == 0):
+            widgetToAdd = Entry(aArray[2].interior(),textvariable = aVariable)
+        else:
+            widgetToAdd =ttk.Combobox(aArray[2].interior(), textvariable=aVariable,
+                                    state='readonly')
+
+        widgetToAdd.grid(row=len(aArray[3]),column=2, padx=5, pady=5)
+        aArray[3].append(widgetToAdd)
         aArray[1].append(aVariable)
+        self.actualizaListas()
         pass
-         
-
-
-    def plusEntry(self,aArray):
-        aEntry = Entry(aArray[2].interior())
-        aEntry.grid(row=len(aArray)-3,column=2, padx=5, pady=5)
-        aArray.append(aEntry)
-        pass
-        
 
 
     def minus(self,aArray):
-        if (aArray[1]==0):
-            aArray[1].pop()
-        disable = aArray.pop()
-        disable.grid_forget()
+        if (len(aArray[3])>1):
+            disable = aArray[3].pop()
+            disable.grid_forget()
         pass
 
 
