@@ -10,7 +10,7 @@ from SearchCriteria import *
 import psycopg2
 
 queryInsertRadio = 'INSERT INTO "Radiografia"("IdRadio", "Fecha", "Zona", "Procedencia", ' \
-                '"Tipo", "Comentario", "RUNPaciente", "NombresPaciente") VALUES (%s, %s, %s, %s, %s, %s, %s, %s);'
+                '"Tipo", "Comentario", "RUNPaciente", "NombresPaciente","ApellidosPaciente") VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);'
 
 queryFiltrarPaciente = 'SELECT "Nombres","Apellidos","RUN" FROM "Paciente" '
 queryAddPaciente = 'INSERT INTO "Paciente" ("Sexo", "RUN", "Nombres", "Apellidos", "FechaNac" ) ' \
@@ -18,7 +18,7 @@ queryAddPaciente = 'INSERT INTO "Paciente" ("Sexo", "RUN", "Nombres", "Apellidos
 
 class Demo:
     def __init__(self, parent):
-        
+        self.currentIdRadio = None
         self.parent = parent
         
         Pmw.aboutversion('9.9')
@@ -218,14 +218,17 @@ class Demo:
         
         self.comentario0 = Label(self.group1.interior(), 
                 text = 'Comentario:').grid(row=8,column=0,sticky=W, padx=5, pady=5)
-        self.comentarioentry0 = Entry(self.group1.interior()).grid(row=8,column=1)
+        self.comentarioentry0 = Entry(self.group1.interior())
+        self.comentarioentry0.grid(row=8,column=1)
 
         
 
 
         # Add another page
         self.page1 = self.notebook.add('Antecedentes')
-
+        #self.groupLabel = Pmw.Group(self.page1)
+        #self.groupLabel.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
+        #Label(self.groupLabel.interior(), text="Trabajando con radiografia de id : "+str(self.getCurrentIdRadio())).grid(row=0,column=0,sticky=W, padx=5, pady=5)
        # Create the "Radiografia" contents of the page.
         ##Trabajo
         self.groupTrabajo = Pmw.Group(self.page1, tag_text = 'Trabajo')
@@ -318,6 +321,7 @@ class Demo:
         #Declarar arreglos para multiplicar basuras
         #########################################################################
         #Obj1.grid_forget()
+
         #Agrupar cada cosa por su propio grupo
         self.medicamentoVar=[self.medicamentoValue]
         self.alergiaVar=[self.alergiaValue]
@@ -385,7 +389,10 @@ class Demo:
         self.checkboxes=[self.var1,self.var2,self.var3,self.var4,self.var5]
 
         self.actualizaListas()
-
+    def getCurrentIdRadio(self):
+        return self.currentIdRadio
+    def updateCurrentIdRadio(self,newId):
+        self.currentIdRadio = newId
     def updateF0(self,x):
         self.varF0.set(x.strftime('%Y-%m-%d'))
         return
@@ -404,7 +411,6 @@ class Demo:
         sf.setCallback(fun)
 
     def crearRadiografia(self):
-        print 'You play to be GOD'
         #filtrar por los checkboxes
         #self.var1,self.var2,self.var3,self.var4,self.var5 son los Tkinter.IntVar() :D
         #hacer el filtro de que se crea
@@ -412,10 +418,11 @@ class Demo:
             print var.get()
 
         params = (str(self.idsentry.get()),str(self.varF1.get()),str(self.zonaValue.get()),str(self.procedenciaValue.get()),
-                  str(self.tipoValue.get()),str("Esto es comentaro")
-                  ,str(self.pacienteValue.get().split(",")[1]),str(self.pacienteValue.get().split(",")[0]),)
+                  str(self.tipoValue.get()),str(self.comentarioentry0.get()),str(self.pacienteValue.get().split(",")[2])
+                  ,str(self.pacienteValue.get().split(",")[0]),str(self.pacienteValue.get().split(",")[1]),)
         try:
             askDb(queryInsertRadio,params)
+            self.statusValue.set("Status: "+"Radiografia agregada")
         except Exception, e:
             self.statusValue.set("Status: "+str(e))
 
@@ -453,7 +460,7 @@ class Demo:
             listRes = ["No hay resultados"]
         else:
             for i in range(len(listRes)):
-                listRes[i] = listRes[i][0]+","+str(listRes[i][1])
+                listRes[i] = listRes[i][0]+","+str(listRes[i][1])+","+str(listRes[i][2])
         self.pacienteCombo['values'] = tuple(listRes)
         self.pacienteCombo.current(0)
 
