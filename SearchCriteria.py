@@ -27,7 +27,7 @@ def askDb(stringQuery,params):
     conn = psycopg2.connect(database='radiografiasUchile',
                             host='localhost',
                             port=5432 ,
-                            password = '58132154',
+                            password = 'postgres',
                             user='postgres')
 
     cursor = conn.cursor()

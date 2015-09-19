@@ -40,7 +40,6 @@ class GraficInterfaceDb:
         self.listEnfermedad = ['a',"d","c"]
         self.listMedicamentos = ['a',"d","c"]
         self.listObserver = []
-
         self.actualizarListas()
         self.actualrow = 0
 
@@ -112,7 +111,7 @@ class GraficInterfaceDb:
 
         #SI ACA COLOCAS TRUE TODOS LOS COMPONENTES NO HACEN PACK Y SE GUARDAN EN LISTA self.listaComponente
         #Puedes cambiar tanto el parent como el grid
-        objetoNuevo = claseBusqueda(marco00,True)
+        objetoNuevo = claseBusqueda(marco00,False)
         cont = 1
         #Ejemplo de como se podrian sacar los componentes
         for comp in objetoNuevo.listaComponente:

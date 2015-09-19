@@ -1,9 +1,9 @@
 # Este script tiene como objetivo llenar una base de datos sql
 
-import paramiko
+#import paramiko
 import psycopg2
 from dateutil.relativedelta import relativedelta
-
+from SearchCriteria import askDb
 import json
 import random
 import datetime
@@ -106,19 +106,7 @@ def giveRut():
 
 
 def sendDb(query, params):
-    conn = psycopg2.connect(database="radiografiasUchile", host="localhost", port=5432, password="58132154",
-                            user="postgres")
-    cursor = conn.cursor();
-    cursor.execute(query, params);
-    try:
-        res = cursor.fetchall();
-    except:
-        res = ""
-    conn.commit();
-    cursor.close();
-    conn.close();
-
-    return res
+    return askDb(query,params)
 
 
 def randomDate():
@@ -146,7 +134,7 @@ def generarPacientes(cantidad):
         date = randomDate().strftime('%Y-%m-%d')
         rutRand = giveRut();
         params = (nombres, apellidos, rutRand, date, random.choice(sexo),
-                  random.randint(50, 150), random.randint(150, 230))
+                  random.randint(50, 150), random.randint(150, 230),)
         sendDb(query, params)
 
 
@@ -204,7 +192,7 @@ def generarRadiografias(cantidad):
         (nombres, rut,apellidos) = result[0]
 
 
-        params = ( fecha, zone, proc, tip,rut,nombres,apellidos)
+        params = ( fecha, zone, proc, tip,rut,nombres,apellidos,)
         if (params in agregado):
             continue
         agregado.append(params)
@@ -212,7 +200,7 @@ def generarRadiografias(cantidad):
         sendDb(query, params)
 
 
-def generarTrabajos():
+def generarListaTrabajos():
 
     for trabajo in trabajoLista:
         query2 = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
@@ -248,7 +236,7 @@ def generarFrames():
         idRadio = elem[0]
         query = 'INSERT INTO "Frames" ("IdRadio","NumOfFrame") ' \
                 ' VALUES (%s,%s)'
-        params = (idRadio, random.randint(1, 100))
+        params = (idRadio, random.randint(1, 100),)
         sendDb(query, params)
 
 #generarFrames()
@@ -258,89 +246,130 @@ def generarFrames():
 #Requiero uno que tome todas las radiografias con enfermedades y les de
 #Tome random los antecedentes a agregar
 #Generar intervenciones que sea individual
-def generaraUnIntervencion():
-
-
+def generaraUnIntervencion(mode, **kwargs):
     query2 = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
              'VALUES (DEFAULT) RETURNING "IdAntecedentes";'
-    idJustAdded = sendDb(query2, '')[0][0]
-
     query = 'INSERT INTO "Intervencion" ("IdAntecedentes", "FechaOperacion", ' \
-            ' "NombreOperacion", "DrOperacion" ) VALUES (%s,%s,%s,%s)'
-    fec = randomDate().strftime('%Y-%m-%d');
-    nombreop = random.choice(intervencionLista);
-    dr = nombre = random.choice(nombreslist) + " " + \
-                  random.choice(apellidolist) + " " + random.choice(apellidolist)
-    params = (idJustAdded, fec, nombreop, dr)
+                ' "NombreOperacion", "DrOperacion" ) VALUES (%s,%s,%s,%s)'
+    idJustAdded = sendDb(query2, '')[0][0]
+    fec = None
+    nombreop = None
+    dr = None
+    if mode:
+        fec = kwargs.get('date')
+        nombreop = kwargs.get('operation')
+        dr = kwargs.get('dr')
+        pass
+    else:
+        fec = randomDate().strftime('%Y-%m-%d');
+        nombreop = random.choice(intervencionLista);
+        dr = nombre = random.choice(nombreslist) + " " + \
+                      random.choice(apellidolist) + " " + random.choice(apellidolist)
+    params = (idJustAdded, fec, nombreop, dr,)
     sendDb(query, params)
     return idJustAdded
 
 #Generar adiccion
 
-def generaraUnAdiccion(lownSustancias,upSustancias):
+def generaraUnAdiccion(lownSustancias,upSustancias,mode, **kwargs):
     query2 = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
              'VALUES (DEFAULT) RETURNING "IdAntecedentes";'
     idJustAdded = sendDb(query2, '')[0][0]
 
     query = 'INSERT INTO "Adiccion" ("IdAntecedentes", "IdSustancia", ' \
             ' "Meses" ) VALUES (%s,%s,%s)'
-    idsus = random.randint(lownSustancias, upSustancias)
-    mess = random.randint(1, 100);
-    params = (idJustAdded, idsus, mess)
+    idsus = None
+    mess = None
+    if mode:
+        idsus = kwargs.get('idSus')
+        mess = kwargs.get('month')
+        pass
+    else:
+        idsus = random.randint(lownSustancias, upSustancias)
+        mess = random.randint(1, 100);
+    params = (idJustAdded, idsus, mess,)
     sendDb(query, params)
 
     return idJustAdded
 
-#generaraUnAdiccion(1,5)
+#Generar comentario
+def generarUnComentario(mode,**kwargs):
+    query2 = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
+             'VALUES (DEFAULT) RETURNING "IdAntecedentes";'
+    idJustAdded = sendDb(query2, '')[0][0]
+    query = 'INSERT INTO "Otros"( "Comentario", "IdAntecedentes") VALUES (%s, %s);'
+    textoCom = ""
+    if mode:
+        textoCom = kwargs.get('comment')
+    params = (textoCom,idJustAdded , )
+    sendDb(query, params)
+    return idJustAdded
 
 #Generar alergico
-def generaraUnAlergico(lownSustancias,upSustancias):
+def generaraUnAlergico(lownSustancias,upSustancias,mode,**kwargs):
     query2 = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
              'VALUES (DEFAULT) RETURNING "IdAntecedentes";'
     idJustAdded = sendDb(query2, '')[0][0]
 
     query = 'INSERT INTO "Alergico" ("IdAntecedentes", "IdSustancia" ' \
             ' ) VALUES (%s,%s)'
-    idsus = random.randint(lownSustancias, upSustancias)
+    idsus = None
+    if mode:
+        idsus = kwargs.get('idSus')
+    else:
+        idsus = random.randint(lownSustancias, upSustancias)
     params = (idJustAdded, idsus, )
     sendDb(query, params)
 
     return idJustAdded
-#generaraUnAlergico(1,5)
+
 
 #Asociar Trabajo con Idantecedentes
-def generarTrabajo():
+def generarTrabajo(mode,**kwargs):
     query2 = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
              'VALUES (DEFAULT) RETURNING "IdAntecedentes";'
     idJustAdded = sendDb(query2, '')[0][0]
 
     query = 'INSERT INTO "Trabajo" ("IdAntecedentes", "NombreTrabajo" ' \
             ' ) VALUES (%s,%s)'
-
-    tra = random.choice(trabajoLista);
-    params = (idJustAdded, tra)
+    tra = None
+    if mode:
+        tra = kwargs.get('trabajo')
+    else:
+        tra = random.choice(trabajoLista)
+    params = (idJustAdded, tra,)
     sendDb(query, params)
 
     return idJustAdded
-#generarTrabajo()
+
 
 #Generar prescipcion medica
-def generarMedPres():
+def generarMedPres(mode,**kwargs):
     query2 = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
              'VALUES (DEFAULT) RETURNING "IdAntecedentes";'
     idJustAdded = sendDb(query2, '')[0][0]
+    idMed = None
 
-    query = 'SELECT "IdMedicamento" FROM "Medicamento" ORDER BY RANDOM() LIMIT 1'
-    medRandom = sendDb(query, '')[0]
-
+    if mode:
+        idMed = kwargs.get('idMed')
+    else:
+        queryId = 'SELECT "IdMedicamento" FROM "Medicamento" ORDER BY RANDOM() LIMIT 1'
+        idMed = sendDb(queryId, '')[0]
     query = 'INSERT INTO "Prescripcion Medica" ("IdAntecedentes", "IdMedicamento" ' \
             ' ) VALUES (%s,%s)'
 
-    params = (idJustAdded, medRandom,)
+    params = (idJustAdded, idMed,)
     sendDb(query, params)
 
     return idJustAdded
-#generarMedPres()
+
+def joinAntecedenteRadiografia(idAnte,idRadio):
+    #Ahora coloca relacion antecedentes radiografia
+    query = 'INSERT INTO "En Contexto de" ("IdAntecedentes", "IdRadio" ' \
+            ' ) VALUES (%s,%s)'
+    params = (idAnte, idRadio,)
+    sendDb(query, params)
+    pass
 
 #Genera en contexto de antecedentes-radiografia
 def generarRelacionAntecedesRadiografia():
@@ -374,26 +403,20 @@ def generarRelacionAntecedesRadiografia():
             cual = random.randint(1, 5)  #5 tipos de antecedentes
             if (cual not in colocados):
                 colocados.append(cual)
-
                 if (cual == 1):
-                    antcread = generaraUnIntervencion()
+                    antcread = generaraUnIntervencion(False)
                 elif (cual == 2):
-                    antcread = generaraUnAlergico(lowBoundAlergia,highBoundAlergia)
+                    antcread = generaraUnAlergico(lowBoundAlergia,highBoundAlergia,False)
                 elif (cual == 3):
-                    antcread = generaraUnAdiccion(lowBoundAdicion,highBoundAdicion)
+                    antcread = generaraUnAdiccion(lowBoundAdicion,highBoundAdicion,False)
                 elif (cual == 4):
-                    antcread = generarTrabajo()
+                    antcread = generarTrabajo(False)
                 elif (cual == 5):
-                    antcread = generarMedPres()
-
-                #Ahora coloca relacion antecedentes radiografia
-                query = 'INSERT INTO "En Contexto de" ("IdAntecedentes", "IdRadio" ' \
-                        ' ) VALUES (%s,%s)'
-
-                params = (antcread, idra)
-                sendDb(query, params)
+                    antcread = generarMedPres(False)
+                joinAntecedenteRadiografia(antcread,idra)
             else:
                 continue
+
 
 #generarRelacionAntecedesRadiografia()
 
@@ -423,15 +446,15 @@ def generarRelacionRadiografiaEnfermedad(numero):
     generarFrames()
 
 
-generarPacientes(200)
-generarSustanciasAlergia()
-generarEnfermedades()
-generarRadiografias(200)
-generarSustanciasDroga()
-generarTrabajos()
-generarMedicamentos()
-
-
-generarRelacionAntecedesRadiografia()
-generarRelacionRadiografiaEnfermedad(100)
+# generarPacientes(200)
+# generarSustanciasAlergia()
+# generarEnfermedades()
+# generarRadiografias(200)
+# generarSustanciasDroga()
+# generarListaTrabajos()
+# generarMedicamentos()
+#
+#
+# generarRelacionAntecedesRadiografia()
+# generarRelacionRadiografiaEnfermedad(100)
 

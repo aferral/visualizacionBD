@@ -20,6 +20,20 @@ queryAddEnfToRad = 'INSERT INTO "Representa"( "NombreE", "Confirmado","IdRadio")
 
 queryAddFrame = 'INSERT INTO "Frames"( "NumOfFrame", "IdRadio") VALUES (%s, %s);'
 
+queryAddMedicamento = 'INSERT INTO "Medicamento"( "NombreMedicamento") VALUES (%s);'
+queryDeleteMedicamento = 'DELETE FROM "Medicamento" WHERE "NombreMedicamento" = %s ;'
+queryUpdateMedicamento = 'UPDATE "Medicamento" SET "NombreMedicamento"= %s WHERE "NombreMedicamento" = %s;'
+queryListaMedicamento = 'SELECT "IdMedicamento","NombreMedicamento" FROM "Medicamento"'
+
+queryAddDroga = 'INSERT INTO "SustanciaAdiccion"( "NombreSustanciaAdiccion") VALUES (%s);'
+queryDeleteDroga = 'DELETE FROM "SustanciaAdiccion" WHERE "NombreSustanciaAdiccion" = %s ;'
+queryUpdateDroga = 'UPDATE "SustanciaAdiccion" SET "NombreSustanciaAdiccion"= %s WHERE "NombreSustanciaAdiccion" = %s;'
+queryListaDroga = 'SELECT "NombreSustanciaAdiccion", "IdSustanciaAdiccion" FROM "SustanciaAdiccion";'
+
+queryAddAlergia = 'INSERT INTO "SustanciaAlergia"( "NombreSustanciaAlergia") VALUES (%s);'
+queryDeleteAlergia = 'DELETE FROM "SustanciaAlergia" WHERE "NombreSustanciaAlergia" = %s ;'
+queryUpdateAlergia = 'UPDATE "SustanciaAlergia" SET "NombreSustanciaAlergia"= %s WHERE "NombreSustanciaAlergia" = %s;'
+queryListaAlergia = 'SELECT "IdSustanciaAlergia", "NombreSustanciaAlergia" FROM "SustanciaAlergia";'
 
 queryAddAntece = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
  'VALUES (DEFAULT) RETURNING "IdAntecedentes";'
@@ -64,13 +78,13 @@ class Demo:
 
         menuBar.addmenu('Edit','asd')
         menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
-                command = lambda: self.newWindow("Medicamento"),
+                command = lambda: self.newWindow("Medicamento",queryAddMedicamento,queryDeleteMedicamento,queryUpdateMedicamento,queryListaMedicamento,self.actualizaListas),
                 label = 'Medicamento')
         menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
-                command = lambda: self.newWindow("Alergia"),
+                command = lambda: self.newWindow("Alergia",queryAddMedicamento,queryDeleteMedicamento,queryUpdateMedicamento,queryListaMedicamento,self.actualizaListas),
                 label = 'Alergia')
         menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
-                command = lambda: self.newWindow("Droga"),
+                command = lambda: self.newWindow("Droga",queryAddMedicamento,queryDeleteMedicamento,queryUpdateMedicamento,queryListaMedicamento,self.actualizaListas),
                 label = 'Droga')
 
         menuBar.addmenu('Help', 'Set user preferences')
@@ -369,7 +383,6 @@ class Demo:
        #########################################################################
        #########################################################################
 
-        self.checkIntervencion
 
         #Agrupar cada cosa por su propio grupo
         self.listaVarEnf = [self.enfermedadValue]
@@ -438,6 +451,7 @@ class Demo:
 
     def crearRadiografia(self):
 
+        #TODO chequear que esten todos los campos rellenos
         try:
             params = (str(self.idsentry.get()),str(self.varF1.get()),str(self.zonaValue.get()),str(self.procedenciaValue.get()),
                       str(self.tipoValue.get()),str(self.comentarioentry0.get()),str(self.pacienteValue.get().split(",")[2])
@@ -518,19 +532,6 @@ class Demo:
         if self.checkComentario.get() == 1:
             idCreated = generarUnComentario(True,comment=self.comentarioentry1.get())
             joinAntecedenteRadiografia(idCreated,self.getCurrentIdRadio())
-
-
-
-
-    def processUnaryAntecedente(self,lista,query):
-        if(lista[4].get() == 1): #Ve si esta activada checkbox
-            #Consigue todos los rellenos de X
-            for varString in self.trabajoArray[1]:
-                #Agrega nuevo antecedente y consige esa id
-                idJustAdded = askDb(queryAddAntece, '')[0][0]
-                #Envia solicitud sql de X y anexa a idRadio actual
-                params = (idJustAdded,varString.get(),)
-                askDb(query,params)
 
 
 
@@ -632,9 +633,9 @@ class Demo:
 
         pass
 
-    def newWindow(self, tipo):
+    def newWindow(self, tipo, queryAdd, queryDelet, queryEdit, queryLista,updateFunction):
         t = Tkinter.Toplevel(self.parent)
-        ventana = VentanaExtra.Demo(t,tipo)
+        ventana = VentanaExtra.Demo(t,tipo, queryAdd, queryDelet, queryEdit,queryLista,updateFunction)
         pass
     
     def execute(self):
