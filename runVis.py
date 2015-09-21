@@ -45,6 +45,8 @@ class GraficInterfaceDb:
 
         self.r = Tk()
         self.r.wm_title("Ventana de busqueda")
+        self.group = LabelFrame(self.r,bd=0)
+        self.group.grid(row=0,column=0,sticky=NW)
 
 
         #Filtrar por id
@@ -105,22 +107,21 @@ class GraficInterfaceDb:
         return self.listMedicamentos
 
 
+
     #Si quieres gridear creo que aqui es un buen lugar
     def putInPlace(self, claseBusqueda):
-        marco00=Frame(self.r)
+        
 
         #SI ACA COLOCAS TRUE TODOS LOS COMPONENTES NO HACEN PACK Y SE GUARDAN EN LISTA self.listaComponente
         #Puedes cambiar tanto el parent como el grid
-        objetoNuevo = claseBusqueda(marco00,False)
+        objetoNuevo = claseBusqueda(self.group,True)
         cont = 1
         #Ejemplo de como se podrian sacar los componentes
         for comp in objetoNuevo.listaComponente:
-            print comp
-            comp.grid(row=cont,column=cont)
+            comp.grid(row=self.actualrow,column=cont) 
             cont+=1
         listaSearch.append(objetoNuevo)
 
-        marco00.grid(row=self.actualrow, column=0)
         self.actualrow+=1
 
         return objetoNuevo
