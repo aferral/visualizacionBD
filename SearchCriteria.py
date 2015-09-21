@@ -24,7 +24,8 @@ queryMedicamento  = 'SELECT "IdRadio" FROM "En Contexto de" JOIN "Prescripcion M
 
 def askDb(stringQuery,params):
     result = []
-    conn = psycopg2.connect(database='radiografiasUchile',
+    ## Cambia el nombre de la DB
+    conn = psycopg2.connect(database='nombredb',
                             host='localhost',
                             port=5432 ,
                             password = 'postgres',
@@ -145,12 +146,14 @@ class SexoSearch(AbstractSearchCriteria):
         lSexo= Label(marco, text="Sexo: ")
 
         self.boolSexo = IntVar()
-        radio1 = Radiobutton(marco, text="M", variable=self.boolSexo, value=1)
-        radio2 = Radiobutton(marco, text="H", variable=self.boolSexo, value=2)
+        marcoF0 = Frame(marco)
+        radio1 = Radiobutton(marcoF0, text="M", variable=self.boolSexo, value=1)
+        radio1.pack(side=LEFT)
+        radio2 = Radiobutton(marcoF0, text="H", variable=self.boolSexo, value=2)
+        radio2.pack(side=RIGHT)
 
         self.ajusta(lSexo)
-        self.ajusta(radio1)
-        self.ajusta(radio2)
+        self.ajusta(marcoF0)
 
         pass
     def giveFilterResults(self):
@@ -165,25 +168,22 @@ class SexoSearch(AbstractSearchCriteria):
 class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
     def __init__(self, marco,modo):
         AbstractSearchCriteria.__init__(self,marco,modo)
-        marcoSelEnf = Frame(marco)
-        lEnfermedad= Label(marcoSelEnf, text="Enfermedad a buscar: ")
+        lEnfermedad= Label(marco, text="Enfermedad a buscar: ")
         self.enfermedadaValues = StringVar()
-        self.comboEnfermedades = ttk.Combobox(marcoSelEnf, textvariable=self.enfermedadaValues,
+        self.comboEnfermedades = ttk.Combobox(marco, textvariable=self.enfermedadaValues,
                                 state='readonly')
         # self.comboEnfermedades['values'] = tuple(lista)
-
-        marcoConf = Frame(marco)
         self.varSi = IntVar()
-        r1 = Radiobutton(marco, text="Confirmado", variable=self.varSi, value=1)
-        r2 = Radiobutton(marco, text="Sospechoso", variable=self.varSi, value=2)
+        marcoF0 = Frame(marco)
+        r1 = Radiobutton(marcoF0, text="Confirmado", variable=self.varSi, value=1)
+        r1.pack(side=LEFT)
+        r2 = Radiobutton(marcoF0, text="Sospechoso", variable=self.varSi, value=2)
+        r2.pack(side=RIGHT)
 
 
         self.ajusta(lEnfermedad)
         self.ajusta(self.comboEnfermedades)
-        self.ajusta(marcoSelEnf)
-        self.ajusta(r1)
-        self.ajusta(r2)
-        self.ajusta(marcoConf)
+        self.ajusta(marcoF0)
 
         pass
 
@@ -218,23 +218,25 @@ class FechaSearch(AbstractSearchCriteria): # Va rango de fechas
         AbstractSearchCriteria.__init__(self,marco,modo)
 
         #Fecha inicio
+        
+        lFechaRadiografia= Label(marco, text="Busqueda en rango:")
         marcoF0 = Frame(marco)
-        lFechaRadiografia= Label(marcoF0, text="Busqueda en rango desde DESDE : ")
-        lFechaRadiografia.pack(side=LEFT)
         self.varF0 = StringVar()
         self.varF0.set('Today')
+        self.lF1 = Label(marcoF0, text = "DESDE:")
+        self.lF1.pack(side=LEFT)
         self.lF0 = Label(marcoF0, textvariable = self.varF0)
         self.lF0.pack(side=LEFT)
         self.buttonF0 = Button(marcoF0,text="Cambiar", command= lambda: self.createWindowsAndBind(self.updateF0))
         self.buttonF0.pack(side=LEFT)
-
+        self.ajusta(lFechaRadiografia)
         self.ajusta(marcoF0)
 
 
         marcoFf = Frame(marco)
 
         #Fecha final
-        lFechaRadiografiaFin= Label(marcoFf, text="Busqueda en rango HASTA : ")
+        lFechaRadiografiaFin= Label(marcoFf, text="HASTA : ")
         lFechaRadiografiaFin.pack(side=LEFT)
         self.varFf = StringVar()
         self.varFf.set('Tomorrow')
