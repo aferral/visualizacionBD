@@ -5,6 +5,9 @@ from Tkinter import *
 import ttk
 from Calendar import *
 import VentanaExtra
+import CreatePaciente
+import editRadio
+import editAntecedentes
 from SearchCriteria import *
 from fillDb import *
 
@@ -42,8 +45,8 @@ class Demo:
         self.currentIdRadio = None
         self.parent = parent
         
-        Pmw.aboutversion('9.9')
-        Pmw.aboutcopyright('Copyright My Company 1999\nAll rights reserved')
+        Pmw.aboutversion('1.0')
+        Pmw.aboutcopyright('Copyright UchileDB\nAll rights reserved')
         Pmw.aboutcontact(
             'For information about this application contact:\n' +
             '  My Help Desk\n' +
@@ -67,14 +70,11 @@ class Demo:
         self.menuBar = menuBar
 
         # Add some buttons to the MainMenuBar.
-        menuBar.addmenu('File', 'Close this window or exit')
-        menuBar.addmenuitem('File', 'command', 'Close this window',
-                command = PrintOne('Action: close'),
-                label = 'Close')
-        menuBar.addmenuitem('File', 'separator')
-        menuBar.addmenuitem('File', 'command', 'Exit the application',
-                command = PrintOne('Action: exit'),
-                label = 'Exit')
+        menuBar.addmenu('Create', 'Close this window or exit')
+        menuBar.addmenuitem('Create', 'command', 'Exit the application',
+                #command = lambda: self.createPaciente(queryAddMedicamento,queryDeleteMedicamento,queryUpdateMedicamento,queryListaMedicamento,self.actualizaListas),
+                command = self.createPaciente,
+                label = 'Paciente')
 
         menuBar.addmenu('Edit','asd')
         menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
@@ -86,6 +86,16 @@ class Demo:
         menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
                 command = lambda: self.newWindow("Droga",queryAddMedicamento,queryDeleteMedicamento,queryUpdateMedicamento,queryListaMedicamento,self.actualizaListas),
                 label = 'Droga')
+        menuBar.addmenuitem('Edit', 'separator')
+        menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
+                #command = lambda: self.editRadio(queryAddMedicamento,queryDeleteMedicamento,queryUpdateMedicamento,queryListaMedicamento,self.actualizaListas),
+                command = self.editRadio,
+                label = 'Radio')
+        menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
+                #command = lambda: self.editAntecedentes(queryAddMedicamento,queryDeleteMedicamento,queryUpdateMedicamento,queryListaMedicamento,self.actualizaListas),
+                command = self.editAntecedentes,
+                label = 'Antecedentes')
+        
 
         menuBar.addmenu('Help', 'Set user preferences')
         menuBar.addmenuitem('Help', 'command', 'Set general preferences',
@@ -119,66 +129,27 @@ class Demo:
             text = 'RUT:').grid(row=0,column=1,sticky=W, padx=5, pady=5)
         self.runentry = Entry(self.group.interior())
         self.runentry.grid(row=0,column=2)
-        
-        #self.varCheckNombre = IntVar()
-        #Checkbutton(self.group.interior(), variable=self.varCheckNombre).grid(row=1,column=0)
-        self.nombre = Label(self.group.interior(), 
-            text = 'Nombre:')
-        self.nombre.grid(row=1,column=1,sticky=W, padx=5, pady=5)
-
-        self.nombreentry = Entry(self.group.interior())
-        self.nombreentry.grid(row=1,column=2)
-
-        #self.varCheckApellidos = IntVar()
-        #Checkbutton(self.group.interior(), variable=self.varCheckApellidos).grid(row=2,column=0)
-        self.apellidos = Label(self.group.interior(),
-            text = 'Apellido:')
-        self.apellidos.grid(row=2,column=1,sticky=W, padx=5, pady=5)
-
-        self.apellidoEntry = Entry(self.group.interior())
-        self.apellidoEntry.grid(row=2,column=2)
-
-
         #Button "Filtro"
         self.filtrar = Button(self.group.interior(),text="Filtrar",
-                            command= self.filtrarPaciente).grid(row=2,column=3,sticky=W, padx=5, pady=5)
-
-        #self.varSexo = IntVar()
-        #Checkbutton(self.group.interior(), variable=self.varSexo).grid(row=3,column=0)
-        self.sexo= Label(self.group.interior(), 
-            text="Sexo:").grid(row=3,column=1,sticky=W, padx=5, pady=5)
-        self.boolsexo = IntVar()
-        self.radiobuttonm=Radiobutton(self.group.interior(), text="M", variable=self.boolsexo, value=1).grid(row=3,column=2,sticky=W)
-        self.radiobuttonh=Radiobutton(self.group.interior(), text="H", variable=self.boolsexo, value=2).grid(row=3,column=2,sticky=E)
-
-        #self.varFechaNac = IntVar()
-        #Checkbutton(self.group.interior(), variable=self.varFechaNac).grid(row=4,column=0)
-        self.fechanac= Label(self.group.interior(), text="FechaNac:").grid(row=4,column=1,sticky=W, padx=5, pady=5)
-        self.varF0 = StringVar()
-        self.varF0.set('Today')
-
-        self.fechanacdate= Label(self.group.interior(), textvariable = self.varF0).grid(row=4,column=2,sticky=W, padx=5, pady=5)
-        self.datechange0 = Button(self.group.interior(),text="Cambiar",
-                            command= lambda: self.createWindowsAndBind(self.updateF0))
-        self.datechange0.grid(row=4,column=1,sticky=E, padx=5, pady=5)
-
-        self.crearPaciente = Button(self.group.interior(),text="Crear",
-                            command= self.crearPaciente).grid(row=5,column=2,sticky=E, padx=5, pady=5)
-                
+                            command= self.filtrarPaciente).grid(row=0,column=3,sticky=W, padx=5, pady=5)
         
+        #Combo box de nombre + apellido / este combo se rellenara ahora
+        self.paciente= Label(self.group.interior(), text="Paciente:").grid(row=1,column=1,sticky=W, padx=5, pady=5)
+        self.pacienteValue = StringVar()
+        self.pacienteCombo = ttk.Combobox(self.group.interior(), textvariable=self.pacienteValue,
+                                state='readonly')
+        self.pacienteCombo['values'] = ()
+        self.pacienteCombo.grid(row=1,column=2)
+
         
+
+       
         
 
         # Create the "Radiografia" contents of the page.
-        self.group1 = Pmw.Group(self.page, tag_text = 'Radiografia **Todos los campos son obligatorios')
+        self.group1 = Pmw.Group(self.page, tag_text = 'Radiografia \nTodos los campos son obligatorios')
         self.group1.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
 
-        self.paciente= Label(self.group1.interior(), text="Paciente:").grid(row=0,column=0,sticky=W, padx=5, pady=5)
-        self.pacienteValue = StringVar()
-        self.pacienteCombo = ttk.Combobox(self.group1.interior(), textvariable=self.pacienteValue,
-                                state='readonly')
-        self.pacienteCombo['values'] = ()
-        self.pacienteCombo.grid(row=0,column=1)
         
         
         self.ids = Label(self.group1.interior(), 
@@ -188,22 +159,26 @@ class Demo:
 
 
         
-
-        self.groupEnf = Pmw.Group(self.group1.interior(), tag_text = 'Enfermedad')
-        self.groupEnf.grid(row=2,column=0)
-        self.enfermedad= Label(self.groupEnf.interior(), text="Enfermedad:").grid(row=0,column=2, padx=5, pady=5)
+        self.groupEnf = LabelFrame(self.group1.interior(),bd=0)
+        self.groupEnf.grid(row=2,column=0,sticky=NW)
+        self.groupEnfCombo = LabelFrame(self.group1.interior(),bd=0)
+        self.groupEnfCombo.grid(row=2,column=1)
+        self.groupEnfB = LabelFrame(self.group1.interior(),bd=0)
+        self.groupEnfB.grid(row=2,column=2,sticky=NW)
+        
+        self.enfermedad= Label(self.groupEnf, text="Enfermedad:").grid(sticky=W, padx=5, pady=5)
         self.enfermedadValue = StringVar()
-        self.enfermedadCombo = ttk.Combobox(self.groupEnf.interior(), textvariable=self.enfermedadValue,
+        self.enfermedadCombo = ttk.Combobox(self.groupEnfCombo, textvariable=self.enfermedadValue,
                                 state='readonly')
         self.enfermedadCombo.grid(row=0,column=2)
 
-        enfButtonPlus = Button(self.groupEnf.interior(),text="+",
-                            command= lambda: self.plusField(self.enfArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
-        enfButtonMinus = Button(self.groupEnf.interior(),text="-",
-                            command= lambda: self.minus(self.enfArray)).grid(row=0,column=4,sticky=E, padx=5, pady=5)
+        enfButtonPlus = Button(self.groupEnfB,text="+",
+                            command= lambda: self.plusField(self.enfArray)).grid(row=0,column=2,sticky=E, padx=5, pady=5)
+        enfButtonMinus = Button(self.groupEnfB,text="-",
+                            command= lambda: self.minus(self.enfArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
 
         self.frame = Label(self.group1.interior(),
-            text = 'Frames Si es mas de uno usar (;)  :').grid(row=3,column=0,sticky=W, padx=5, pady=5)
+            text = 'Frames \n>1 usar (;)  :').grid(row=3,column=0,sticky=W, padx=5, pady=5)
         self.frameentry = Entry(self.group1.interior())
         self.frameentry.grid(row=3,column=1)
 
@@ -241,11 +216,17 @@ class Demo:
                                 state='readonly')
         self.procedenciaCombo.grid(row=7,column=1)
 
+        self.confirmado= Label(self.group1.interior(), text="Confirmado:").grid(row=8,column=0,sticky=W, padx=5, pady=5)
+        self.confirmadoValue = StringVar()
+        self.confirmadoCombo = ttk.Combobox(self.group1.interior(), textvariable=self.confirmadoValue,
+                                state='readonly')
+        self.confirmadoCombo.grid(row=8,column=1)
+
         
         self.comentario0 = Label(self.group1.interior(), 
-                text = 'Comentario:').grid(row=8,column=0,sticky=W, padx=5, pady=5)
+                text = 'Comentario:').grid(row=9,column=0,sticky=W, padx=5, pady=5)
         self.comentarioentry0 = Entry(self.group1.interior())
-        self.comentarioentry0.grid(row=8,column=1)
+        self.comentarioentry0.grid(row=9,column=1)
 
         
 
@@ -397,13 +378,13 @@ class Demo:
         listaAlergiaCombo = [self.alergiaCombo]
         listaAdiccionCombo = [self.adiccionCombo]
         
-        self.enfArray = [4, self.listaVarEnf, self.groupEnf, listaEnfCombo]
+        self.enfArray = [4, self.listaVarEnf, self.groupEnfCombo, listaEnfCombo]
 
         #Antecedentes
-        self.trabajoArray = [0, self.listaVarTrabajo, self.groupTrabajo, listaTrabajoEntrys,self.checkTrabajo]
-        self.medicamentoArray = [1, self.listaVarmedicamento, self.groupMedicamentos, listaMedCombo,self.checkMed]
-        self.alergiaArray = [2, self.listaVaralergia, self.groupAlergia, listaAlergiaCombo,self.checkAlergia]
-        self.adiccionArray = [3, self.listaVaradiccion, self.groupAdiccion, listaAdiccionCombo,self.checkAdiccion]
+        self.trabajoArray = [0, self.listaVarTrabajo, self.groupTrabajo.interior(), listaTrabajoEntrys,self.checkTrabajo]
+        self.medicamentoArray = [1, self.listaVarmedicamento, self.groupMedicamentos.interior(), listaMedCombo,self.checkMed]
+        self.alergiaArray = [2, self.listaVaralergia, self.groupAlergia.interior(), listaAlergiaCombo,self.checkAlergia]
+        self.adiccionArray = [3, self.listaVaradiccion, self.groupAdiccion.interior(), listaAdiccionCombo,self.checkAdiccion]
 
        #########################################################################
        #########################################################################
@@ -536,41 +517,53 @@ class Demo:
 
 
     def filtrarPaciente(self):
+        ###### Solo se usara el Rut para filtrar los posibles nombres(optimamente 1)
 
-        (varSexo,varRun,varNombre,varApellido,varFecha,) = self.getParamsPaciente()
-        whereString = ""
-        params = ()
-        if (varSexo != ''):
-            whereString += '"Sexo" = %s AND '
-            params = params + (str(varSexo),)
-        if (varRun != ''):
-            whereString += '"RUN" = %s AND '
-            params = params + (str(varRun),)
-        if (varNombre != ''):
-            whereString += '"Nombres" LIKE %s AND '
-            params = params + ("%"+str(varNombre)+"%",)
-        if (varApellido != ''):
-            whereString += '"Apellidos" LIKE %s AND '
-            params = params + ("%"+str(varApellido)+"%",)
-        if (varFecha != 'Today'):
-            whereString += '"FechaNac" < %s AND '
-            params = params + (str(varFecha),)
-        if(whereString != ""):
-            whereString = "WHERE "+whereString[:-4]
+        #(varSexo,varRun,varNombre,varApellido,varFecha,) = self.getParamsPaciente()
+        #whereString = ""
+        #params = ()
+        #if (varSexo != ''):
+        #    whereString += '"Sexo" = %s AND '
+        #    params = params + (str(varSexo),)
+        #if (varRun != ''):
+        #    whereString += '"RUN" = %s AND '
+        #    params = params + (str(varRun),)
+        #if (varNombre != ''):
+        #    whereString += '"Nombres" LIKE %s AND '
+        #    params = params + ("%"+str(varNombre)+"%",)
+        #if (varApellido != ''):
+        #    whereString += '"Apellidos" LIKE %s AND '
+        #    params = params + ("%"+str(varApellido)+"%",)
+        #if (varFecha != 'Today'):
+        #    whereString += '"FechaNac" < %s AND '
+        #    params = params + (str(varFecha),)
+        #if(whereString != ""):
+        #    whereString = "WHERE "+whereString[:-4]
+        
 
 
-        listRes = []
-        try:
-            listRes = askDb(queryFiltrarPaciente + whereString,params)
-        except Exception, e:
-            self.statusValue.set("Status: "+str(e))
-        if len(listRes) == 0:
-            listRes = ["No hay resultados"]
-        else:
-            for i in range(len(listRes)):
-                listRes[i] = listRes[i][0]+","+str(listRes[i][1])+","+str(listRes[i][2])
-        self.pacienteCombo['values'] = tuple(listRes)
-        self.pacienteCombo.current(0)
+        #listRes = []
+        #try:
+        #    listRes = askDb(queryFiltrarPaciente + whereString,params)
+        #except Exception, e:
+        #    self.statusValue.set("Status: "+str(e))
+        #if len(listRes) == 0:
+        #    listRes = ["No hay resultados"]
+        #else:
+        #    for i in range(len(listRes)):
+        #        listRes[i] = listRes[i][0]+","+str(listRes[i][1])+","+str(listRes[i][2])
+        #self.pacienteCombo['values'] = tuple(listRes)
+        #self.pacienteCombo.current(0)
+
+
+        #tendremos que si encuentra , rellena la combobox, que tiene el mismo nombre de la anterior
+        #no deberias tener problemas con rellenarla
+        pass
+        #entonces lo que hare sera solo filtrar por run y rellenar combo
+
+
+
+        
 
     def getParamsPaciente(self):
         varSexo = 'M'
@@ -589,17 +582,6 @@ class Demo:
         print "FechaNac ",varFecha
         return (varSexo,varRun,varNombre,varApellido,varFecha,)
 
-    def crearPaciente(self):
-
-        #crea al paciente
-
-
-        params = self.getParamsPaciente()
-        try:
-            askDb(queryAddPaciente,params)
-            self.statusValue.set("Status: "+"Paciente agregado")
-        except Exception, e:
-            self.statusValue.set("Status: "+str(e))
 
     def actualizaListas(self):
 
@@ -646,9 +628,9 @@ class Demo:
         aVariable = StringVar()
         widgetToAdd = None
         if (n == 0):
-            widgetToAdd = Entry(aArray[2].interior(),textvariable = aVariable)
+            widgetToAdd = Entry(aArray[2],textvariable = aVariable)
         else:
-            widgetToAdd =ttk.Combobox(aArray[2].interior(), textvariable=aVariable,
+            widgetToAdd =ttk.Combobox(aArray[2], textvariable=aVariable,
                                     state='readonly')
 
         widgetToAdd.grid(row=len(aArray[3]),column=2, padx=5, pady=5)
@@ -674,14 +656,25 @@ class Demo:
         for i in range(len(listRes)):
             listRes[i] = listRes[i][0]
         return listRes
+
+    ####################################################
+
+    def createPaciente(self):
+        t = Tkinter.Toplevel(self.parent)
+        ventana = CreatePaciente.Demo(t)
+        pass
     
-class PrintOne:
-    def __init__(self, text):
-        self.text = text
-
-    def __call__(self):
-        print self.text
-
+    def editAntecedentes(self):
+        t = Tkinter.Toplevel(self.parent)
+        ventana = editAntecedentes.Demo(t)
+        pass
+    
+    def editRadio(self):
+        t = Tkinter.Toplevel(self.parent)
+        ventana = editRadio.Demo(t)
+        pass
+    
+    #####################################################
 
 
 
