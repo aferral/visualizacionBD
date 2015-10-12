@@ -1,12 +1,11 @@
 __author__ = 'aferral'
 
-
-from Tkinter import *
-import ttk
 from tkintertable.Tables import TableCanvas
 from tkintertable.TableModels import TableModel
-from SearchCriteria import *
+
+from librerias.SearchCriteria import *
 from ventanaAntecedentes import *
+
 listaSearch = []
 resultSearch = []
 

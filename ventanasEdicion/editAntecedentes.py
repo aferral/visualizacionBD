@@ -1,14 +1,8 @@
 # -*- coding: cp1252 -*-
-import Tkinter
 import Pmw
-from Tkinter import *
-import ttk
-from Calendar import *
-import VentanaExtra
-from SearchCriteria import *
-from fillDb import *
 
-import psycopg2
+from librerias.SearchCriteria import *
+from tools.fillDb import *
 
 
 class Demo:

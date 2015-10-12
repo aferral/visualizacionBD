@@ -25,10 +25,10 @@ queryMedicamento  = 'SELECT "IdRadio" FROM "En Contexto de" JOIN "Prescripcion M
 def askDb(stringQuery,params):
     result = []
     ## Cambia el nombre de la DB
-    conn = psycopg2.connect(database='nombredb',
+    conn = psycopg2.connect(database='radiografiasUchile',
                             host='localhost',
                             port=5432 ,
-                            password = 'postgres',
+                            password = '58132154',
                             user='postgres')
 
     cursor = conn.cursor()

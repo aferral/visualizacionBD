@@ -1,10 +1,11 @@
 # -*- coding: cp1252 -*-
 import Tkinter
-import Pmw
 from Tkinter import *
 import ttk
-from SearchCriteria import askDb
 
+import Pmw
+
+from librerias.SearchCriteria import askDb
 
 
 class Demo:
@@ -39,9 +40,6 @@ class Demo:
                                                         padx=5, pady=5)
 
 
-
-
-        #
         #Grupo de Borrado
         #
         self.groupborrar = Pmw.Group(parent,

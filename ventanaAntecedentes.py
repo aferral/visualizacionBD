@@ -1,8 +1,7 @@
 import Tkinter
 from Tkinter import *
 
-from SearchCriteria import askDb
-import ttk
+from librerias.SearchCriteria import askDb
 
 queryFrames = 'SELECT "NumOfFrame" FROM "Frames" WHERE "IdRadio" = %s'
 

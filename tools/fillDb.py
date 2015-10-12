@@ -1,12 +1,12 @@
 # Este script tiene como objetivo llenar una base de datos sql
 
 #import paramiko
-import psycopg2
 from dateutil.relativedelta import relativedelta
-from SearchCriteria import askDb
-import json
 import random
 import datetime
+
+from librerias.SearchCriteria import askDb
+
 
 # Requiero una lista de nombres
 
