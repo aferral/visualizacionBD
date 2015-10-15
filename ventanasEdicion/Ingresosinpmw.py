@@ -10,6 +10,7 @@ from tools.fillDb import *
 from patronesRecurrentes import filtrarPaciente
 
 from librerias.querys.queryList import *
+import WidgetContainer
 
 class Demo:
     def __init__(self, parent):
@@ -54,6 +55,7 @@ class Demo:
                                                  queryUpdateMedicamento,queryListaMedicamento,
                                                  self.actualizaListas),
                 label = 'Medicamento')
+
         menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
                 command = lambda: self.newWindow("Alergia",queryAddAlergia,
                                                  queryDeleteAlergia,
@@ -78,6 +80,33 @@ class Demo:
                 command = self.editAntecedentes,
                 label = 'Antecedentes')
         
+        menuBar.addmenuitem('Edit', 'separator')
+        menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
+                command = lambda: self.newWindow("Procedencia",
+                                                 queryAddProce,queryDeleteProce,
+                                                 queryUpdateProce,queryListaProce,
+                                                 self.actualizaListas),
+                label = 'Procedencia')
+        menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
+                command = lambda: self.newWindow("Zona",
+                                                 queryAddZona,queryDeleteZona,
+                                                 queryUpdateZona,queryListaZona,
+                                                 self.actualizaListas),
+                label = 'Zona')
+        menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
+                command = lambda: self.newWindow("Tipo",
+                                                 queryAddTipo,queryDeleteTipo,
+                                                 queryUpdateTipo,queryListaTipo,
+                                                 self.actualizaListas),
+                label = 'Tipo')
+        menuBar.addmenuitem('Edit', 'separator')
+        menuBar.addmenuitem('Edit', 'command', 'Delete the current selection',
+                command = lambda: self.newWindow("Tipo",
+                                                 queryAddEnfermedad,queryDeleteEnfermedad,
+                                                 queryUpdateEnfermedad,queryListaEnfermedad,
+                                                 self.actualizaListas),
+                label = 'Enfermedad')
+
 
         menuBar.addmenu('Help', 'Set user preferences')
         menuBar.addmenuitem('Help', 'command', 'Set general preferences',
@@ -139,23 +168,36 @@ class Demo:
 
 
         
-        self.groupEnf = LabelFrame(self.group1.interior(),bd=0)
+        self.groupEnf = LabelFrame(self.group1.interior())
         self.groupEnf.grid(row=2,column=0,sticky=NW)
+
         self.groupEnfCombo = LabelFrame(self.group1.interior(),bd=0)
         self.groupEnfCombo.grid(row=2,column=1)
+
         self.groupEnfB = LabelFrame(self.group1.interior(),bd=0)
         self.groupEnfB.grid(row=2,column=2,sticky=NW)
         
-        self.enfermedad= Label(self.groupEnf, text="Enfermedad:").grid(sticky=W, padx=5, pady=5)
-        self.enfermedadValue = StringVar()
-        self.enfermedadCombo = ttk.Combobox(self.groupEnfCombo, textvariable=self.enfermedadValue,
-                                state='readonly')
-        self.enfermedadCombo.grid(row=0,column=2)
+        Label(self.groupEnf, text="Enfermedad:").grid(row=0,column=0,sticky=W, padx=5, pady=5)
+
+
+        self.contEnf = []
+        cont = WidgetContainer.Contenedor(self.groupEnf)
+
+        cont.add(ttk.Combobox,"Enfermedad",True,state='readonly').grid(row=0,column=0)
+        cont.add(ttk.Combobox,"Confirmado",True,state='readonly').grid(row=0,column=1)
+        cont.add(Entry,"Comentario",True,).grid(row=0,column=2)
+
+        cont.grid(row=0,column=1)
+        self.contEnf.append(cont)
+
+        #fsfjdfdjksfjdk;sfk;dk; sj;d kj;lsdk;l jsd;fl jsdkl;fj l;kdsfksd;j fd
 
         enfButtonPlus = Button(self.groupEnfB,text="+",
-                            command= lambda: self.plusField(self.enfArray)).grid(row=0,column=2,sticky=E, padx=5, pady=5)
+                            command= lambda: self.expPlus(self.contEnf,self.groupEnf)
+                               ).grid(row=0,column=2,sticky=E, padx=5, pady=5)
         enfButtonMinus = Button(self.groupEnfB,text="-",
-                            command= lambda: self.minus(self.enfArray)).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+                            command= lambda: self.expMinus(self.contEnf)
+                                ).grid(row=0,column=3,sticky=E, padx=5, pady=5)
 
         self.frame = Label(self.group1.interior(),
             text = 'Frames \n>1 usar (;)  :').grid(row=3,column=0,sticky=W, padx=5, pady=5)
@@ -176,8 +218,6 @@ class Demo:
         self.tipoValue = StringVar()
         self.tipoCombo = ttk.Combobox(self.group1.interior(), textvariable=self.tipoValue,
                                 state='readonly')
-        self.tipoCombo['values'] = ('Radiografia', 'Escaner', 'Resonancia')
-        self.tipoCombo.current(0)
         self.tipoCombo.grid(row=5,column=1)
 
         self.fecha= Label(self.group1.interior(), text="Fecha").grid(row=6,column=0,sticky=W, padx=5, pady=5)
@@ -192,12 +232,6 @@ class Demo:
         self.procedenciaCombo = ttk.Combobox(self.group1.interior(), textvariable=self.procedenciaValue,
                                 state='readonly')
         self.procedenciaCombo.grid(row=7,column=1)
-
-        self.confirmado= Label(self.group1.interior(), text="Confirmado:").grid(row=8,column=0,sticky=W, padx=5, pady=5)
-        self.confirmadoValue = StringVar()
-        self.confirmadoCombo = ttk.Combobox(self.group1.interior(), textvariable=self.confirmadoValue,
-                                state='readonly')
-        self.confirmadoCombo.grid(row=8,column=1)
 
         
         self.comentario0 = Label(self.group1.interior(), 
@@ -342,20 +376,19 @@ class Demo:
        #########################################################################
 
 
-        #Agrupar cada cosa por su propio grupo
-        self.listaVarEnf = [self.enfermedadValue]
+
+
         self.listaVarTrabajo=[self.varTrabajo]
         self.listaVarmedicamento=[self.medicamentoValue]
         self.listaVaralergia=[self.alergiaValue]
         self.listaVaradiccion=[self.adiccionValue]
 
-        listaEnfCombo = [self.enfermedadCombo]
+
         listaTrabajoEntrys = [self.trabjoentry]
         listaMedCombo = [self.medicamentoCombo]
         listaAlergiaCombo = [self.alergiaCombo]
         listaAdiccionCombo = [self.adiccionCombo]
-        
-        self.enfArray = [4, self.listaVarEnf, self.groupEnfCombo, listaEnfCombo]
+
 
         #Antecedentes
         self.trabajoArray = [0, self.listaVarTrabajo, self.groupTrabajo.interior(), listaTrabajoEntrys,self.checkTrabajo]
@@ -411,10 +444,19 @@ class Demo:
 
         #TODO chequear que esten todos los campos rellenos
         try:
-            params = (str(self.idsentry.get()),str(self.varF1.get()),str(self.zonaValue.get()),str(self.procedenciaValue.get()),
-                      str(self.tipoValue.get()),str(self.comentarioentry0.get()),str(self.pacienteValue.get().split(",")[2])
-                      ,str(self.pacienteValue.get().split(",")[0]),str(self.pacienteValue.get().split(",")[1]),)
+            valId = str(self.idsentry.get())
+            valFecha = str(self.varF1.get())
+            valZona = str(self.zonaValue.get())
+            valProc = str(self.procedenciaValue.get())
+            valTipo = str(self.tipoValue.get())
+            valComent = str(self.comentarioentry0.get())
+            valPacName = str(self.pacienteValue.get().split(",")[2])
+            valPacApell = str(self.pacienteValue.get().split(",")[0])
+            valPacRun = str(self.pacienteValue.get().split(",")[1])
+
+            params = (valId,valFecha,valZona,valProc,valTipo,valComent,valPacName,valPacApell,valPacRun,)
         except Exception, e :
+            print str(e)
             self.statusValue.set("Status: "+"Todo los campos deben rellenarse")
             return
         try:
@@ -427,8 +469,13 @@ class Demo:
         self.setCurrentIdRadio(self.idsentry.get())
 
         #Agrega las distintas enfermedades y los distintos frames
-        for enfVar in self.enfArray[1]:
-            askDb(queryAddEnfToRad, (str(enfVar.get()),True,str(self.getCurrentIdRadio()),))
+        for contenedor in self.contEnf:
+            valorEnf = contenedor.get('Enfermedad')
+            valorConf = contenedor.get('Confirmado')
+            valorComent = contenedor.get('Comentario')
+            valorId = str(self.getCurrentIdRadio())
+
+            askDb(queryAddEnfToRad, (valorEnf,valorConf,valorId,valorComent,))
 
         #Agrega los distintos frames
         listaDeFrames = self.frameentry.get().split(";")
@@ -497,20 +544,28 @@ class Demo:
 
         queryEnfName =  'SELECT DISTINCT "NombreE" FROM "Enfermedad" ORDER BY "NombreE" '
         queryMedName =  'SELECT "NombreMedicamento" FROM "Medicamento" '
-        queryRadiZone =  'SELECT DISTINCT "Zona" FROM "Radiografia" ORDER BY "Zona" '
+        queryTipos =  'SELECT "nombreT" FROM "TipoR" '
+        queryRadiZone =  'SELECT DISTINCT "nombreZ" FROM "Zonas" ORDER BY "nombreZ" '
         querySustanciaAlergia =  'SELECT DISTINCT "NombreSustanciaAlergia" FROM "SustanciaAlergia" ORDER BY "NombreSustanciaAlergia" '
         querySustanciaAdiccion =  'SELECT DISTINCT "NombreSustanciaAdiccion" FROM "SustanciaAdiccion" ORDER BY "NombreSustanciaAdiccion" '
-        queryProcedencia = 'SELECT DISTINCT "Procedencia" FROM "Radiografia" ORDER BY "Procedencia" '
+        queryProcedencia = 'SELECT DISTINCT "nombreP" FROM "Procedencias" ORDER BY "nombreP"'
 
+
+        #Actualiza enfermedas, Confirmados
         listaEnf = auxProcessList(queryEnfName,"")
-        for combo in self.enfArray[3]:
-            combo['values'] = tuple(listaEnf)
+        listaConf = ("True","False");
+        for contenedor in self.contEnf:
+            print "Actualizando contenedor"
+            contenedor.update("Enfermedad",listaEnf)
+            contenedor.update("Confirmado",listaConf)
+
 
         listaMed = auxProcessList(queryMedName,"")
         for combo in self.medicamentoArray[3]:
             combo['values'] = tuple(listaMed)
 
         self.zonaCombo['values'] = tuple(auxProcessList(queryRadiZone,""))
+        self.tipoCombo['values'] = tuple(auxProcessList(queryTipos,""))
 
         listaAlerg = auxProcessList(querySustanciaAlergia,"")
         for combo in self.alergiaArray[3]:
@@ -532,6 +587,19 @@ class Demo:
     
     def execute(self):
         self.about.show()
+
+
+    def expPlus(self,lista,where):
+        print len(lista)
+        newRow = lista[0].clone(where)
+        newRow.grid(row=len(lista),column=1, padx=5, pady=5)
+        lista.append(newRow)
+        self.actualizaListas()
+        pass
+    def expMinus(self,lista):
+        disable = lista.pop()
+        disable.grid_forget()
+        pass
 
     def plusField(self,aArray):
         n=aArray[0]

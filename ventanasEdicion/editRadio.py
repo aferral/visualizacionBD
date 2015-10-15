@@ -3,6 +3,7 @@ import Pmw
 
 from librerias.SearchCriteria import *
 from tools.fillDb import *
+from librerias.querys import *
 
 
 class Demo:
@@ -64,16 +65,7 @@ class Demo:
 
 
     def editarRadio(self):
-
-        #crea al paciente
-
-
-        params = self.getParamsPaciente()
-        try:
-            askDb(queryAddPaciente,params)
-            self.statusValue.set("Status: "+"Paciente agregado")
-        except Exception, e:
-            self.statusValue.set("Status: "+str(e))
+        pass
 
 
     def plusField(self,aArray):

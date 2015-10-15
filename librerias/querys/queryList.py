@@ -1,6 +1,7 @@
 __author__ = 'aferral'
 queryInsertRadio = 'INSERT INTO "Radiografia"("IdRadio", "Fecha", "Zona", "Procedencia", ' \
-                '"Tipo", "Comentario", "RUNPaciente", "NombresPaciente","ApellidosPaciente") VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);'
+                '"Tipo", "Comentario", "RUNPaciente", "NombresPaciente","ApellidosPaciente"' \
+                   ') VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);'
 
 queryPacienteInfo = 'SELECT "Nombres","Apellidos","RUN","FechaNac","Sexo" FROM ' \
                     '"Paciente" WHERE "RUN" = %s AND "Apellidos" = %s AND "Nombres" = %s '
@@ -12,7 +13,8 @@ queryAddPaciente = 'INSERT INTO "Paciente" ("Sexo", "RUN", "Nombres", "Apellidos
                 'VALUES (%s, %s, %s, %s, %s)'
 queryDeletePaciente = 'DELETE FROM "Paciente" WHERE "Nombres" = %s AND "Apellidos" = %s AND "RUN" = %s ;'
 
-queryAddEnfToRad = 'INSERT INTO "Representa"( "NombreE", "Confirmado","IdRadio") VALUES (%s, %s, %s);'
+queryAddEnfToRad = 'INSERT INTO "Representa"( "NombreE", "Confirmado","IdRadio", "Comentario" ' \
+                   ') VALUES (%s, %s, %s,%s);'
 
 queryAddFrame = 'INSERT INTO "Frames"( "NumOfFrame", "IdRadio") VALUES (%s, %s);'
 
@@ -33,3 +35,24 @@ queryListaAlergia = 'SELECT "IdSustanciaAlergia", "NombreSustanciaAlergia" FROM 
 
 queryAddAntece = 'INSERT INTO "Antecedentes" ("IdAntecedentes") ' \
  'VALUES (DEFAULT) RETURNING "IdAntecedentes";'
+
+queryAddZona = 'INSERT INTO "Zonas"( "nombreZ") VALUES (%s);';
+queryDeleteZona = 'DELETE FROM "Zonas" WHERE "nombreZ" = %s ;'
+queryUpdateZona = 'UPDATE "Zonas" SET "nombreZ"= %s WHERE "nombreZ" = %s;'
+queryListaZona =  'SELECT DISTINCT "nombreZ" FROM "Zonas" ORDER BY "nombreZ" '
+
+queryAddTipo = 'INSERT INTO "TipoR"( "nombreT") VALUES (%s);';
+queryDeleteTipo = 'DELETE FROM "TipoR" WHERE "nombreT" = %s ;'
+queryUpdateTipo = 'UPDATE "TipoR" SET "nombreT"= %s WHERE "nombreT" = %s;'
+queryListaTipo = 'SELECT "nombreT" FROM "TipoR";'
+
+queryAddProce = 'INSERT INTO "Procedencias"( "nombreP") VALUES (%s);'
+queryDeleteProce = 'DELETE FROM "Procedencias" WHERE "nombreP" = %s ;'
+queryUpdateProce = 'UPDATE "Procedencias" SET "nombreP"= %s WHERE "nombreP" = %s;'
+queryListaProce = 'SELECT "nombreP" FROM "Procedencias";'
+
+
+queryAddEnfermedad = 'INSERT INTO "Enfermedad"( "NombreE") VALUES (%s);'
+queryDeleteEnfermedad = 'DELETE FROM "Enfermedad" WHERE "NombreE" = %s ;'
+queryUpdateEnfermedad = 'UPDATE "Enfermedad" SET "NombreE"= %s WHERE "NombreE" = %s;'
+queryListaEnfermedad = 'SELECT "NombreE" FROM "Enfermedad"'

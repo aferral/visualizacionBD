@@ -113,7 +113,11 @@ class Demo:
     def borrar(self):
         print "Se esta borrando"
         print str(self.deleteVar.get())
-        nombreViejo = str(self.deleteVar.get()).split(",")[1]
+        test = str(self.deleteVar.get()).split(",")
+        if len(test) > 1:
+            nombreViejo = test[1]
+        else:
+            nombreViejo = test[0]
         params = (nombreViejo,)
         askDb(self.consultaDelet,params)
 
@@ -121,7 +125,11 @@ class Demo:
 
     def editar(self):
         print "Se esta editando"
-        nombreViejo = str(self.updateVar.get()).split(",")[1]
+        test = str(self.updateVar.get()).split(",")
+        if len(test) > 1:
+            nombreViejo = test[1]
+        else:
+            nombreViejo = test[0]
         nombreNuevo = str(self.newUpdateVar.get())
         params = (nombreNuevo,nombreViejo,)
         askDb(self.consultaEdit,params)
@@ -134,7 +142,10 @@ class Demo:
         lista = askDb(self.consultaLista,params)
         listaOut = []
         for elem in lista:
-            listaOut.append(str(elem[0])+","+str(elem[1]))
+            if (len(elem) > 1):
+                listaOut.append(str(elem[0])+","+str(elem[1]))
+            else:
+                listaOut.append(str(elem[0]))
         self.itemCombo['values'] = tuple(listaOut)
         self.itemCombo1['values'] = tuple(listaOut)
         if len(lista) > 0:
