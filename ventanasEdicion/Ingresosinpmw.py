@@ -13,7 +13,6 @@ from librerias.querys.queryList import *
 from ventanasEdicion.DatosRadio import vistaRadio
 from ventanasEdicion.modeloAntecedentes import vistaAntecedentes
 
-
 class Demo:
     def __init__(self, parent):
         self.currentIdRadio = None
