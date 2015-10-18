@@ -8,6 +8,8 @@ import datetime
 from librerias.SearchCriteria import askDb
 
 
+#ESTA MUY MUY DESACTUALIZADO NO USAR
+
 # Requiero una lista de nombres
 
 nombreslist = ["andres", "roberto", "pedro", "raul", "gonzalo", "raquel", "marta", "maria",

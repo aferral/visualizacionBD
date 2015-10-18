@@ -5,6 +5,7 @@ from tkintertable.TableModels import TableModel
 
 from librerias.SearchCriteria import *
 from ventanaAntecedentes import *
+from librerias.querys.queryList import *
 
 listaSearch = []
 resultSearch = []
@@ -22,16 +23,10 @@ resultSearch = []
 #Documentacion
 #Claves y usuarios
 
-queryMostrar = 'select "IdRadio","Fecha","Zona","Procedencia","Tipo","RUNPaciente","NombresPaciente", ' \
-                '"ApellidosPaciente","NombreE","Confirmado" from "Radiografia" ' \
-                'JOIN "Representa" USING ( "IdRadio" ) WHERE "Radiografia"."IdRadio" in %s'
-metaquery = 'CREATE TEMP TABLE tmp126 AS ( ' + queryMostrar + " ) ;" + "SELECT column_name " \
-        "FROM  information_schema.columns WHERE  table_name = 'tmp126' ORDER  BY ordinal_position"
 
 idColumnName = "('IdRadio',)"
 
-queryListaEnf =  'SELECT DISTINCT "NombreE" FROM "Enfermedad" ORDER BY "NombreE" '
-queryListaMed =  'SELECT "NombreMedicamento" FROM "Medicamento" '
+
 
 class GraficInterfaceDb:
     def __init__(self):
@@ -89,7 +84,7 @@ class GraficInterfaceDb:
                             rowselectedcolor='yellow', editable=True)
         self.table.createTableFrame()
         marco12.grid(row=self.actualrow,column=0)
-        self.actualrow+=1
+        self.actualrow += 1
 
         self.actualizarListas()
 

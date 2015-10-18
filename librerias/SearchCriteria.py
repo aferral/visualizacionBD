@@ -3,24 +3,8 @@ from Tkinter import *
 import psycopg2
 import ttk
 from Calendar import *
+from querys.queryList import *
 
-queryIdRadio = 'Select "IdRadio" FROM "Radiografia" WHERE "IdRadio" = %s '
-queryNombresPaciente = 'Select "IdRadio" FROM "Radiografia" WHERE "NombresPaciente" LIKE %s '
-queryApellidosPaciente = 'Select "IdRadio" FROM "Radiografia" WHERE "ApellidosPaciente" LIKE %s '
-queryRUN = 'Select "IdRadio" FROM "Radiografia" WHERE "RUNPaciente" = %s '
-querySexoPaciente = 'SELECT "IdRadio" FROM "Radiografia" WHERE "Radiografia"."RUNPaciente" ' \
-        'IN (SELECT "RUN" FROM "Paciente" WHERE "Sexo" = %s)'
-queryEnfermedad = 'Select "IdRadio" FROM "Representa" WHERE ("NombreE" = %s AND "Confirmado" = %s)'
-queryTipoRadio = 'Select "IdRadio" FROM "Radiografia" WHERE "Tipo" = %s'
-queryFechas = 'Select "IdRadio" FROM "Radiografia" WHERE ("Fecha" > %s AND "Fecha" < %s)'
-queryFuma = 'SELECT "IdRadio" FROM "En Contexto de" WHERE "IdAntecedentes" IN ' \
-        '(SELECT "IdAntecedentes" FROM "Adiccion" JOIN "Sustancia" ON ("Adiccion"."IdSustancia" =' \
-        ' "Sustancia"."IdSustancia")  WHERE ("NombreSustancia" = %s))'
-queryMedicamento  = 'SELECT "IdRadio" FROM "En Contexto de" JOIN "Prescripcion Medica" ' \
-                    'ON ("En Contexto de"."IdAntecedentes" = "Prescripcion Medica"."IdAntecedentes")' \
-                    ' WHERE "IdMedicamento" IN (SELECT "Medicamento"."IdMedicamento" FROM "Prescripcion Medica"' \
-                    ' JOIN "Medicamento" ON ("Medicamento"."IdMedicamento" = "Prescripcion Medica"."IdMedicamento")' \
-                    ' WHERE "Medicamento"."NombreMedicamento" = %s) '
 
 def askDb(stringQuery,params):
     result = []

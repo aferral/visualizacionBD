@@ -16,7 +16,15 @@ class Contenedor(Frame):
         pass
     def add(self,widgetClass,palabra,modo, *args, **kwargs): #Las maravillas de python
         #Lo retorno si lo quieres gridear SE GRIDEA RESPECTO A ESTO SI (Es un frame)
+
         temp = widgetClass(self, *args, **kwargs)
+        #if widgetClass == Entry or widgetClass == ttk.Combobox:
+        variable = StringVar()
+        temp.configure(textvariable = variable)
+        self.dict[palabra+"Var"] = variable
+        self.inside.append(variable)
+
+
         self.dict[palabra] = temp
         self.inside.append(temp)
         self.inst.append((widgetClass,palabra,modo,args,kwargs))
@@ -30,6 +38,10 @@ class Contenedor(Frame):
         if isinstance(elem,ttk.Combobox):
             elem['values'] = tuple(lista)
         pass
+    def set(self,palabra,contenido):
+        widget = self.dict[palabra]
+        widget.set(contenido)
+
     def clone(self,where):
         temp = Contenedor(where)
         c=0

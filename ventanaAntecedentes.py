@@ -2,35 +2,7 @@ import Tkinter
 from Tkinter import *
 
 from librerias.SearchCriteria import askDb
-
-queryFrames = 'SELECT "NumOfFrame" FROM "Frames" WHERE "IdRadio" = %s'
-
-queryAlergia = 'SELECT "NombreSustanciaAlergia" FROM "Alergico" JOIN "SustanciaAlergia" ON' \
-                ' ("Alergico"."IdSustancia" = "SustanciaAlergia"."IdSustanciaAlergia") WHERE ' \
-                '"IdAntecedentes" IN (SELECT "IdAntecedentes" FROM "En Contexto de"' \
-                ' WHERE "IdRadio" = %s)'
-queryAdiccion = 'SELECT "NombreSustanciaAdiccion" FROM "Adiccion" JOIN "SustanciaAdiccion" ON ' \
-                '("Adiccion"."IdSustancia" = "SustanciaAdiccion"."IdSustanciaAdiccion") WHERE "IdAntecedentes"' \
-                ' IN (SELECT "IdAntecedentes" FROM "En Contexto de" WHERE "IdRadio" = %s)'
-
-queryOperacion = 'SELECT "FechaOperacion","NombreOperacion","DrOperacion" FROM "Intervencion" ' \
-                ' WHERE "IdAntecedentes" IN (SELECT "IdAntecedentes" FROM "En Contexto de" WHERE "IdRadio" = %s)'
-
-queryMed = 'SELECT "NombreMedicamento" FROM "Prescripcion Medica" JOIN "Medicamento" ON ' \
-                '("Prescripcion Medica"."IdMedicamento" = "Medicamento"."IdMedicamento") WHERE ' \
-                '"IdAntecedentes" IN (SELECT "IdAntecedentes" FROM "En Contexto de" WHERE "IdRadio" = %s)'
-
-queryTrabajo = 'SELECT "NombreTrabajo" FROM "Trabajo" WHERE "IdAntecedentes" IN ' \
-                '(SELECT "IdAntecedentes" FROM "En Contexto de" WHERE "IdRadio" = %s)'
-
-queryComentario = 'SELECT "Comentario" FROM "Otros" WHERE "IdAntecedentes" IN ' \
-                '(SELECT "IdAntecedentes" FROM "En Contexto de" WHERE "IdRadio" = %s)'
-
-queryPaciente = 'SELECT "Paciente"."Nombres","Paciente"."Apellidos","Paciente"."RUN","Paciente"."FechaNac","Sexo" FROM' \
-                ' "Radiografia" JOIN "Paciente" ON ("Paciente"."RUN" = "Radiografia"."RUNPaciente"' \
-                ' AND "Paciente"."Nombres" = "Radiografia"."NombresPaciente" ' \
-                ' AND "Paciente"."Apellidos" = "Radiografia"."ApellidosPaciente" ' \
-                ') WHERE "IdRadio" = %s'
+from librerias.querys.queryList import *
 
 class Bloque(Tkinter.Frame):
 
