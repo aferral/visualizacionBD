@@ -39,7 +39,7 @@ class vistaRadio:
         self.groupEnf.grid(row=3,column=0,sticky=NW)
 
         self.groupEnfCombo = LabelFrame(Frame.interior(),bd=0)
-        self.groupEnfCombo.grid(row=3,column=1)
+        self.groupEnfCombo.grid(row=3,column=1,sticky=NW)
 
         self.groupEnfB = LabelFrame(Frame.interior(),bd=0)
         self.groupEnfB.grid(row=3,column=2,sticky=NW)

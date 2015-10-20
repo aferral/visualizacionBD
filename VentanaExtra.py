@@ -56,7 +56,7 @@ class Demo:
                                           textvariable=self.deleteVar,
                                           state='readonly')
         self.itemCombo['values'] = ()
-        self.itemCombo.grid(row=0,column=1)
+        self.itemCombo.grid(row=0,column=1,sticky=W, padx=5, pady=5)
 
         self.buttonborrar = Button(self.groupborrar.interior(),text="Borrar",
                             command= self.borrar).grid(row=1,column=2,sticky=E,
@@ -84,7 +84,7 @@ class Demo:
                                           textvariable=self.updateVar,
                                           state='readonly')
 
-        self.itemCombo1.grid(row=0,column=1)
+        self.itemCombo1.grid(row=0,column=1,sticky=W, padx=5, pady=5)
         
 
 

@@ -29,7 +29,7 @@ class Demo:
         Label(self.grupoFiltro.interior(),
             text = 'RUT sin codigo ver:').grid(row=1,column=0,sticky=W, padx=5, pady=5)
         self.runentry = Entry(self.grupoFiltro.interior())
-        self.runentry.grid(row=1,column=1)
+        self.runentry.grid(row=1,column=1,sticky=W, padx=5, pady=5)
 
 
         #FIn de filtro
@@ -45,8 +45,8 @@ class Demo:
 
         #Botones editar o eliminar
 
-        Button(self.groupBotones.interior(), text="Editar", command = self.edit).grid(row=0,column=0)
-        Button(self.groupBotones.interior(), text="Borrar", command = self.delete).grid(row=0,column=1)
+        Button(self.groupBotones.interior(), text="Editar", command = self.edit).grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        Button(self.groupBotones.interior(), text="Borrar", command = self.delete).grid(row=0,column=1,sticky=W, padx=5, pady=5)
 
     def filter(self):
 

@@ -40,7 +40,7 @@ class GraficInterfaceDb:
         self.r = Tk()
         self.r.wm_title("Ventana de busqueda")
         self.group = LabelFrame(self.r,bd=0)
-        self.group.grid(row=0,column=0,sticky=NW)
+        self.group.grid(row=0,column=0,sticky=NW, padx=5, pady=5)
 
 
         #Filtrar por id
@@ -67,13 +67,13 @@ class GraficInterfaceDb:
         marco11 = Frame(self.r)
 
         bSearch = Button(marco11, text="Busqueda", command=self.doQuery)
-        bSearch.pack()
+        bSearch.pack(padx=5, pady=5)
 
         lResultados = Label(marco11, text="Resultados de query: ")
-        lResultados.pack()
+        lResultados.pack(padx=5, pady=5)
         bExportExcel = Button(marco11, text="Exportar a excel")
-        bExportExcel.pack()
-        marco11.grid(row=self.actualrow, column=0)
+        bExportExcel.pack(padx=5, pady=5)
+        marco11.grid(row=self.actualrow, column=0,sticky=W, padx=5, pady=5)
         self.actualrow+=1
 
         marco12 = Frame(self.r)
@@ -83,7 +83,7 @@ class GraficInterfaceDb:
                             thefont=('Arial',9),rowheight=18, rowheaderwidth=30,
                             rowselectedcolor='yellow', editable=True)
         self.table.createTableFrame()
-        marco12.grid(row=self.actualrow,column=0)
+        marco12.grid(row=self.actualrow,column=0,sticky=W, padx=5, pady=5)
         self.actualrow += 1
 
         self.actualizarListas()

@@ -8,8 +8,8 @@ from ventanasEdicion.modeloAntecedentes import vistaAntecedentes
 
 class Demo:
     def __init__(self, parent):
-        self.group = Pmw.Group(parent, tag_text = 'Antecedentes')
-        self.group.grid(row=1,column=0,sticky=E, padx=5, pady=5)
+        self.group = Pmw.Group(parent, tag_text = 'Radiografia')
+        self.group.grid(row=1,column=0,sticky= N, padx=5, pady=5)
 
         ####Inicio el Filtro
 

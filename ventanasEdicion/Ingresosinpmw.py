@@ -26,6 +26,7 @@ class Demo:
             '  Informacion de contacto\n' +
             '  Phone: +995096669\n' +
             '  email: andreslago5@hotmail.com\n' +
+            '  email: jjatjenkins1@gmail.com\n' +
             '  aferral and argorthas'
         )
         self.about = Pmw.AboutDialog(parent, applicationname = 'My Application')
@@ -134,7 +135,7 @@ class Demo:
         Label(self.group.interior(),
             text = 'RUT sin codigo ver:').grid(row=0,column=0,sticky=W, padx=5, pady=5)
         self.runentry = Entry(self.group.interior())
-        self.runentry.grid(row=0,column=1)
+        self.runentry.grid(row=0,column=1,sticky=W, padx=5, pady=5)
 
         # Create the "Radiografia" contents of the page.
         self.group1 = Pmw.Group(self.page, tag_text = 'Radiografia \nTodos los campos son obligatorios')
@@ -167,18 +168,8 @@ class Demo:
 
 
         # Create and pack the ButtonBox.
-        self.buttonBox = Pmw.ButtonBox(parent,
-                labelpos = 'w',
-                label_text = '                                                                                           ',
-                frame_borderwidth = 2,
-                frame_relief = 'groove')
-        self.buttonBox.pack(fill = 'both', expand = 1, padx = 10, pady = 10)
-
-        # Add some buttons to the ButtonBox.
-        self.buttonBox.add('Crear', command = self.crearRadiografia)
-
-        # Make all the buttons the same width.
-        self.buttonBox.alignbuttons()
+        b = Button(parent, text="Crear", command=self.crearRadiografia)
+        b.pack(padx = 10, pady = 10,side=RIGHT)
         self.actualizaListas()
 
     def getCurrentIdRadio(self):
