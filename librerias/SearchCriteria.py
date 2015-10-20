@@ -5,7 +5,6 @@ import ttk
 from Calendar import *
 from querys.queryList import *
 
-
 def askDb(stringQuery,params):
     result = []
     ## Cambia el nombre de la DB
