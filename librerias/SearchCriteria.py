@@ -178,6 +178,10 @@ class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
         params = (str(self.comboEnfermedades.get()),'TRUE' if (self.varSi.get()==1) else 'FALSE',)
         return auxProcessList(queryEnfermedad, params)
 
+
+
+
+
 class TipoRadioSearch(AbstractSearchCriteria):
     def __init__(self,marco,modo):
         AbstractSearchCriteria.__init__(self,marco,modo)

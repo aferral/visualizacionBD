@@ -30,13 +30,13 @@ class vistaRadio:
         self.pacienteCombo = ttk.Combobox(Frame.interior(), textvariable=self.pacienteValue,
                                 state='readonly')
         self.pacienteCombo['values'] = ()
-        self.pacienteCombo.grid(row=2,column=1)
+        self.pacienteCombo.grid(row=2,column=1,sticky=W, padx=5, pady=5)
 
         self.refWidget['PacienteCombo'] = self.pacienteCombo
 
 
-        self.groupEnf = LabelFrame(Frame.interior())
-        self.groupEnf.grid(row=3,column=0,sticky=W)
+        self.groupEnf = LabelFrame(Frame.interior(),bd=0)
+        self.groupEnf.grid(row=3,column=0,sticky=NW)
 
         self.groupEnfCombo = LabelFrame(Frame.interior(),bd=0)
         self.groupEnfCombo.grid(row=3,column=1)
@@ -44,27 +44,28 @@ class vistaRadio:
         self.groupEnfB = LabelFrame(Frame.interior(),bd=0)
         self.groupEnfB.grid(row=3,column=2,sticky=NW)
 
-        Label(self.groupEnf, text="Enfermedad:").grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        Label(self.groupEnf, text="Enfermedad:").grid(row=0,column=5,sticky=NE, padx=5, pady=5)
+
 
 
         self.contEnf = []
-        cont = WidgetContainer.Contenedor(self.groupEnf)
-        cont.add(ttk.Combobox,"Enfermedad",True,state='readonly').grid(row=0,column=0)
-        cont.add(ttk.Combobox,"Confirmado",True,state='readonly').grid(row=0,column=1)
-        cont.add(Entry,"Comentario",True,).grid(row=0,column=2)
-        cont.grid(row=0,column=1)
+        cont = WidgetContainer.Contenedor(self.groupEnfCombo)
+        cont.add(ttk.Combobox,"Enfermedad",True,state='readonly').grid(row=0,column=0,sticky=W, padx=5, pady=5)
+        cont.add(ttk.Combobox,"Confirmado",True,state='readonly').grid(row=1,column=0,sticky=W, padx=5, pady=5)
+        cont.add(Entry,"Comentario",True,).grid(row=2,column=0,sticky=W, padx=5, pady=5)
+        cont.grid(row=1,column=0,sticky=W, padx=5, pady=5)
         self.contEnf.append(cont)
 
 
-        Button(self.groupEnf,text="+",command= lambda: self.expPlus(self.contEnf,self.groupEnf)
-                               ).grid(row=0,column=2,sticky=E, padx=5, pady=5)
-        Button(self.groupEnf,text="-",command= lambda: self.expMinus(self.contEnf)
-                                ).grid(row=0,column=3,sticky=E, padx=5, pady=5)
+        Button(self.groupEnfB,text="+",command= lambda: self.expPlus(self.contEnf,self.groupEnfCombo)
+                               ).grid(row=0,column=2,sticky=NE, padx=5, pady=5)
+        Button(self.groupEnfB,text="-",command= lambda: self.expMinus(self.contEnf)
+                                ).grid(row=0,column=3,sticky=NE, padx=5, pady=5)
 
-        Label(Frame.interior(),text = 'Frames \n>1 usar (;)  :').grid(row=4,column=0,sticky=W, padx=5, pady=5)
+        Label(Frame.interior(),text = 'Frames \n>1 usar (;) :').grid(row=4,column=0,sticky=W, padx=5, pady=5)
 
 
-        Entry(Frame.interior(),textvariable=self.varFrame).grid(row=4,column=1)
+        Entry(Frame.interior(),textvariable=self.varFrame).grid(row=4,column=1,sticky=W, padx=5, pady=5)
 
         # Create and pack the dropdown ComboBox.
         Label(Frame.interior(), text="Zona:").grid(row=5,column=0,sticky=W, padx=5, pady=5)
@@ -72,7 +73,7 @@ class vistaRadio:
         self.zonaCombo = ttk.Combobox(Frame.interior(), textvariable=self.zonaValue,
                                 state='readonly')
 
-        self.zonaCombo.grid(row=5,column=1)
+        self.zonaCombo.grid(row=5,column=1,sticky=W, padx=5, pady=5)
 
 
        # Create and pack the dropdown ComboBox.
@@ -80,7 +81,7 @@ class vistaRadio:
         self.tipoValue = StringVar()
         self.tipoCombo = ttk.Combobox(Frame.interior(), textvariable=self.tipoValue,
                                 state='readonly')
-        self.tipoCombo.grid(row=6,column=1)
+        self.tipoCombo.grid(row=6,column=1,sticky=W, padx=5, pady=5)
 
         Label(Frame.interior(), text="Fecha").grid(row=7,column=0,sticky=W, padx=5, pady=5)
 
@@ -92,12 +93,12 @@ class vistaRadio:
 
         self.procedenciaCombo = ttk.Combobox(Frame.interior(), textvariable=self.procedenciaValue,
                                 state='readonly')
-        self.procedenciaCombo.grid(row=8,column=1)
+        self.procedenciaCombo.grid(row=8,column=1,sticky=W, padx=5, pady=5)
 
 
         Label(Frame.interior(),text = 'Comentario:').grid(row=9,column=0,sticky=W, padx=5, pady=5)
 
-        Entry(Frame.interior(),textvariable=self.varComentario).grid(row=9,column=1)
+        Entry(Frame.interior(),textvariable=self.varComentario).grid(row=9,column=1,sticky=W, padx=5, pady=5)
 
         pass
 
@@ -118,7 +119,7 @@ class vistaRadio:
 
     def expPlus(self,lista,where):
         newRow = lista[0].clone(where)
-        newRow.grid(row=len(lista),column=1, padx=5, pady=5)
+        newRow.grid(row=len(lista)+1,column=0, padx=5, pady=5)
         lista.append(newRow)
         self.update()
         pass

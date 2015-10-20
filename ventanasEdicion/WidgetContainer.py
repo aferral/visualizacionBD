@@ -48,7 +48,7 @@ class Contenedor(Frame):
 
         for (widgetClass,palabra,modo,args,kwargs) in self.inst:
             widget = temp.add(widgetClass,palabra,modo,*args,**kwargs)
-            widget.grid(row=0,column=c)
+            widget.grid(row=c,column=0,sticky=W, padx=5, pady=5)
             c+=1
             pass
         return temp
