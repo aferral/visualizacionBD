@@ -1,7 +1,6 @@
 # Este script tiene como objetivo llenar una base de datos sql
 
 #import paramiko
-from dateutil.relativedelta import relativedelta
 import random
 import datetime
 
@@ -114,9 +113,7 @@ def sendDb(query, params):
 
 def randomDate():
     dateIni = datetime.datetime(1950, 01, 01);
-    dateIni = dateIni + relativedelta(months=random.randint(0, 11))
-    dateIni = dateIni + relativedelta(years=random.randint(0, 55))
-    dateIni = dateIni + datetime.timedelta(days=random.randint(0, 29))
+
     return dateIni
 
 
