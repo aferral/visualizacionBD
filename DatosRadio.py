@@ -1,12 +1,13 @@
 import tkMessageBox
-from librerias.Calendar import SecondFrame
+
+from Calendar import SecondFrame
 
 __author__ = 'aferral'
 from Tkinter import *
 import ttk
 import WidgetContainer
-from librerias.SearchCriteria import auxProcessList
-from librerias.SearchCriteria import askDb
+from SearchCriteria import auxProcessList
+from SearchCriteria import askDb
 from librerias.querys.queryList import *
 class vistaRadio:
     def __init__(self,Frame):

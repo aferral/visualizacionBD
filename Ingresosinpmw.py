@@ -2,16 +2,14 @@
 import Pmw
 
 import VentanaExtra
-from ventanasEdicion import ventanaEditarPaciente
+import ventanaEditarPaciente
 import editRadio
 import editAntecedentes
-from librerias.SearchCriteria import *
-
+from SearchCriteria import *
 from patronesRecurrentes import filtrarPaciente
-
 from librerias.querys.queryList import *
-from ventanasEdicion.DatosRadio import vistaRadio
-from ventanasEdicion.modeloAntecedentes import vistaAntecedentes
+from DatosRadio import vistaRadio
+from modeloAntecedentes import vistaAntecedentes
 
 class Demo:
     def __init__(self, parent):

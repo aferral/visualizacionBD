@@ -1,11 +1,9 @@
 # -*- coding: cp1252 -*-
 import Pmw
 
-from librerias.SearchCriteria import *
-from tools.fillDb import *
-from librerias.querys import *
-from ventanasEdicion.DatosRadio import vistaRadio
-from ventanasEdicion.patronesRecurrentes import filtrarPaciente
+from SearchCriteria import *
+from DatosRadio import vistaRadio
+from patronesRecurrentes import filtrarPaciente
 
 class Demo:
     def __init__(self, parent):

@@ -1,8 +1,9 @@
 import Tkinter
 from Tkinter import *
 
-from librerias.SearchCriteria import askDb
+from SearchCriteria import askDb
 from librerias.querys.queryList import *
+
 
 class Bloque(Tkinter.Frame):
 

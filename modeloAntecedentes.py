@@ -1,12 +1,9 @@
-from Tkinter import *
-import ttk
-from ventanasEdicion import WidgetContainer
-from ventanasEdicion.WidgetContainer import Contenedor
+import WidgetContainer
 
 __author__ = 'aferral'
 import Pmw
-from tools.fillDb import *
-from librerias.SearchCriteria import *
+from fillDb import *
+from SearchCriteria import *
 
 queryIdAdiccion = 'SELECT "IdSustanciaAdiccion" FROM "SustanciaAdiccion" WHERE "NombreSustanciaAdiccion" = %s '
 queryMedName =  'SELECT "NombreMedicamento" FROM "Medicamento" '

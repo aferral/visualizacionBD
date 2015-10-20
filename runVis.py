@@ -3,7 +3,7 @@ __author__ = 'aferral'
 from tkintertable.Tables import TableCanvas
 from tkintertable.TableModels import TableModel
 
-from librerias.SearchCriteria import *
+from SearchCriteria import *
 from ventanaAntecedentes import *
 from librerias.querys.queryList import *
 

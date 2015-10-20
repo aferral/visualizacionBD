@@ -3,7 +3,7 @@ from Tkinter import *
 import psycopg2
 import ttk
 from Calendar import *
-from querys.queryList import *
+from librerias.querys.queryList import *
 
 def askDb(stringQuery,params):
     result = []

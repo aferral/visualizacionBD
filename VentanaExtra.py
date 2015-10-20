@@ -5,7 +5,7 @@ import ttk
 
 import Pmw
 
-from librerias.SearchCriteria import askDb
+from SearchCriteria import askDb
 
 
 class Demo:

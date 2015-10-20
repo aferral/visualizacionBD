@@ -1,9 +1,8 @@
 # -*- coding: cp1252 -*-
 import Pmw
 
-from librerias.SearchCriteria import *
-from tools.fillDb import *
-from ventanasEdicion.modeloAntecedentes import vistaAntecedentes
+from SearchCriteria import *
+from modeloAntecedentes import vistaAntecedentes
 
 
 class Demo:

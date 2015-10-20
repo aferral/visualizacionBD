@@ -1,11 +1,8 @@
 # -*- coding: cp1252 -*-
-import tkMessageBox
 
 import Pmw
 
-from librerias.SearchCriteria import *
-from tools.fillDb import *
-from librerias.querys.queryList import queryAddPaciente
+from SearchCriteria import *
 from patronesRecurrentes import filtrarPaciente
 from patronesRecurrentes import crearPaciente
 from patronesRecurrentes import updateEntrys

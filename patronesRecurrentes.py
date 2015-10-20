@@ -1,11 +1,13 @@
 __author__ = 'aferral'
-from librerias.SearchCriteria import askDb
+import tkMessageBox
+
+from SearchCriteria import askDb
 from librerias.querys.queryList import queryFiltrarPaciente
 from librerias.querys.queryList import queryAddPaciente
 from librerias.querys.queryList import queryPacienteInfo
 from librerias.querys.queryList import queryUpdatePaciente
 from librerias.querys.queryList import queryDeletePaciente
-import tkMessageBox
+
 
 def filtrarPaciente(runentry,pacienteCombo,statusValue):
     varRun = runentry.get().strip()

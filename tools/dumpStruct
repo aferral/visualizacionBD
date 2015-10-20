@@ -1,0 +1,1168 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: Adiccion; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Adiccion" (
+    "Meses" integer,
+    "IdSustancia" integer NOT NULL,
+    "IdAntecedentes" integer NOT NULL
+);
+
+
+ALTER TABLE public."Adiccion" OWNER TO postgres;
+
+--
+-- Name: Adiccion_IdAntecedentes_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Adiccion_IdAntecedentes_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Adiccion_IdAntecedentes_seq" OWNER TO postgres;
+
+--
+-- Name: Adiccion_IdAntecedentes_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Adiccion_IdAntecedentes_seq" OWNED BY "Adiccion"."IdAntecedentes";
+
+
+--
+-- Name: Adiccion_IdSustancia_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Adiccion_IdSustancia_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Adiccion_IdSustancia_seq" OWNER TO postgres;
+
+--
+-- Name: Adiccion_IdSustancia_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Adiccion_IdSustancia_seq" OWNED BY "Adiccion"."IdSustancia";
+
+
+--
+-- Name: Alergico; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Alergico" (
+    "IdAntecedentes" integer NOT NULL,
+    "IdSustancia" integer NOT NULL
+);
+
+
+ALTER TABLE public."Alergico" OWNER TO postgres;
+
+--
+-- Name: Alergico_IdAntecedentes_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Alergico_IdAntecedentes_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Alergico_IdAntecedentes_seq" OWNER TO postgres;
+
+--
+-- Name: Alergico_IdAntecedentes_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Alergico_IdAntecedentes_seq" OWNED BY "Alergico"."IdAntecedentes";
+
+
+--
+-- Name: Alergico_IdSustancia_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Alergico_IdSustancia_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Alergico_IdSustancia_seq" OWNER TO postgres;
+
+--
+-- Name: Alergico_IdSustancia_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Alergico_IdSustancia_seq" OWNED BY "Alergico"."IdSustancia";
+
+
+--
+-- Name: Antecedentes; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Antecedentes" (
+    "IdAntecedentes" integer NOT NULL
+);
+
+
+ALTER TABLE public."Antecedentes" OWNER TO postgres;
+
+--
+-- Name: Antecedentes_IdAntecedentes_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Antecedentes_IdAntecedentes_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Antecedentes_IdAntecedentes_seq" OWNER TO postgres;
+
+--
+-- Name: Antecedentes_IdAntecedentes_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Antecedentes_IdAntecedentes_seq" OWNED BY "Antecedentes"."IdAntecedentes";
+
+
+--
+-- Name: En Contexto de; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "En Contexto de" (
+    "IdAntecedentes" integer NOT NULL,
+    "IdRadio" integer NOT NULL
+);
+
+
+ALTER TABLE public."En Contexto de" OWNER TO postgres;
+
+--
+-- Name: En Contexto de_IdAntecedentes_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "En Contexto de_IdAntecedentes_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."En Contexto de_IdAntecedentes_seq" OWNER TO postgres;
+
+--
+-- Name: En Contexto de_IdAntecedentes_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "En Contexto de_IdAntecedentes_seq" OWNED BY "En Contexto de"."IdAntecedentes";
+
+
+--
+-- Name: En Contexto de_IdRadio_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "En Contexto de_IdRadio_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."En Contexto de_IdRadio_seq" OWNER TO postgres;
+
+--
+-- Name: En Contexto de_IdRadio_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "En Contexto de_IdRadio_seq" OWNED BY "En Contexto de"."IdRadio";
+
+
+--
+-- Name: Enfermedad; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Enfermedad" (
+    "NombreE" character(40) NOT NULL
+);
+
+
+ALTER TABLE public."Enfermedad" OWNER TO postgres;
+
+--
+-- Name: Frames; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Frames" (
+    "NumOfFrame" text NOT NULL,
+    "IdRadio" integer NOT NULL
+);
+
+
+ALTER TABLE public."Frames" OWNER TO postgres;
+
+--
+-- Name: Frames_IdRadio_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Frames_IdRadio_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Frames_IdRadio_seq" OWNER TO postgres;
+
+--
+-- Name: Frames_IdRadio_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Frames_IdRadio_seq" OWNED BY "Frames"."IdRadio";
+
+
+--
+-- Name: Intervencion; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Intervencion" (
+    "FechaOperacion" date NOT NULL,
+    "NombreOperacion" character(40) NOT NULL,
+    "DrOperacion" character(50) NOT NULL,
+    "IdAntecedentes" integer NOT NULL
+);
+
+
+ALTER TABLE public."Intervencion" OWNER TO postgres;
+
+--
+-- Name: Intervencion_IdAntecedentes_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Intervencion_IdAntecedentes_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Intervencion_IdAntecedentes_seq" OWNER TO postgres;
+
+--
+-- Name: Intervencion_IdAntecedentes_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Intervencion_IdAntecedentes_seq" OWNED BY "Intervencion"."IdAntecedentes";
+
+
+--
+-- Name: Medicamento; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Medicamento" (
+    "NombreMedicamento" character(40) NOT NULL,
+    "IdMedicamento" integer NOT NULL
+);
+
+
+ALTER TABLE public."Medicamento" OWNER TO postgres;
+
+--
+-- Name: Medicamento_IdMedicamento_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Medicamento_IdMedicamento_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Medicamento_IdMedicamento_seq" OWNER TO postgres;
+
+--
+-- Name: Medicamento_IdMedicamento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Medicamento_IdMedicamento_seq" OWNED BY "Medicamento"."IdMedicamento";
+
+
+--
+-- Name: Otros; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Otros" (
+    "Comentario" character(200) NOT NULL,
+    "IdAntecedentes" integer NOT NULL
+);
+
+
+ALTER TABLE public."Otros" OWNER TO postgres;
+
+--
+-- Name: Otros_IdAntecedentes_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Otros_IdAntecedentes_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Otros_IdAntecedentes_seq" OWNER TO postgres;
+
+--
+-- Name: Otros_IdAntecedentes_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Otros_IdAntecedentes_seq" OWNED BY "Otros"."IdAntecedentes";
+
+
+--
+-- Name: Paciente; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Paciente" (
+    "Nombres" text NOT NULL,
+    "RUN" integer NOT NULL,
+    "FechaNac" date,
+    "Sexo" character(1),
+    "Peso" double precision,
+    "Altura" double precision,
+    "Apellidos" text NOT NULL
+);
+
+
+ALTER TABLE public."Paciente" OWNER TO postgres;
+
+--
+-- Name: COLUMN "Paciente"."RUN"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN "Paciente"."RUN" IS 'Sin verificador';
+
+
+--
+-- Name: Prescripcion Medica; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Prescripcion Medica" (
+    "IdMedicamento" integer NOT NULL,
+    "IdAntecedentes" integer NOT NULL
+);
+
+
+ALTER TABLE public."Prescripcion Medica" OWNER TO postgres;
+
+--
+-- Name: Prescripcion Medica_IdAntecedentes_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Prescripcion Medica_IdAntecedentes_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Prescripcion Medica_IdAntecedentes_seq" OWNER TO postgres;
+
+--
+-- Name: Prescripcion Medica_IdAntecedentes_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Prescripcion Medica_IdAntecedentes_seq" OWNED BY "Prescripcion Medica"."IdAntecedentes";
+
+
+--
+-- Name: Prescripcion Medica_IdMedicamento_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Prescripcion Medica_IdMedicamento_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Prescripcion Medica_IdMedicamento_seq" OWNER TO postgres;
+
+--
+-- Name: Prescripcion Medica_IdMedicamento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Prescripcion Medica_IdMedicamento_seq" OWNED BY "Prescripcion Medica"."IdMedicamento";
+
+
+--
+-- Name: Procedencias; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Procedencias" (
+    "nombreP" text NOT NULL
+);
+
+
+ALTER TABLE public."Procedencias" OWNER TO postgres;
+
+--
+-- Name: TABLE "Procedencias"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE "Procedencias" IS 'Tipos de procedencias';
+
+
+--
+-- Name: RadioIdSeq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "RadioIdSeq"
+    START WITH 350
+    INCREMENT BY 1
+    MINVALUE 350
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."RadioIdSeq" OWNER TO postgres;
+
+--
+-- Name: Radiografia; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Radiografia" (
+    "Fecha" date,
+    "Zona" text,
+    "Procedencia" text,
+    "Tipo" text,
+    "Comentario" character(200),
+    "RUNPaciente" integer,
+    "NombresPaciente" text,
+    "ApellidosPaciente" text,
+    "IdRadio" integer NOT NULL
+);
+
+
+ALTER TABLE public."Radiografia" OWNER TO postgres;
+
+--
+-- Name: COLUMN "Radiografia"."Zona"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN "Radiografia"."Zona" IS 'Esta es la zona del cuerpo donde se toma la radiografia';
+
+
+--
+-- Name: COLUMN "Radiografia"."Procedencia"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN "Radiografia"."Procedencia" IS 'Procedencia del paciente, ej, Ambulatorio';
+
+
+--
+-- Name: COLUMN "Radiografia"."Tipo"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN "Radiografia"."Tipo" IS 'Tipo de Radiografia, Escaner, Resonancia, etc';
+
+
+--
+-- Name: COLUMN "Radiografia"."Comentario"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN "Radiografia"."Comentario" IS 'Comentario del comentario';
+
+
+--
+-- Name: Radiografia_IdRadio_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Radiografia_IdRadio_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Radiografia_IdRadio_seq" OWNER TO postgres;
+
+--
+-- Name: Radiografia_IdRadio_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Radiografia_IdRadio_seq" OWNED BY "Radiografia"."IdRadio";
+
+
+--
+-- Name: Representa; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Representa" (
+    "NombreE" character(40) NOT NULL,
+    "Confirmado" boolean,
+    "Comentario" text,
+    "IdRadio" integer NOT NULL
+);
+
+
+ALTER TABLE public."Representa" OWNER TO postgres;
+
+--
+-- Name: Representa_IdRadio_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Representa_IdRadio_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Representa_IdRadio_seq" OWNER TO postgres;
+
+--
+-- Name: Representa_IdRadio_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Representa_IdRadio_seq" OWNED BY "Representa"."IdRadio";
+
+
+--
+-- Name: SustanciaAdiccion; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "SustanciaAdiccion" (
+    "NombreSustanciaAdiccion" character(40),
+    "IdSustanciaAdiccion" integer NOT NULL
+);
+
+
+ALTER TABLE public."SustanciaAdiccion" OWNER TO postgres;
+
+--
+-- Name: SustanciaAdiccion_IdSustancia_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "SustanciaAdiccion_IdSustancia_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."SustanciaAdiccion_IdSustancia_seq" OWNER TO postgres;
+
+--
+-- Name: SustanciaAdiccion_IdSustancia_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "SustanciaAdiccion_IdSustancia_seq" OWNED BY "SustanciaAdiccion"."IdSustanciaAdiccion";
+
+
+--
+-- Name: SustanciaAlergia; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "SustanciaAlergia" (
+    "IdSustanciaAlergia" integer NOT NULL,
+    "NombreSustanciaAlergia" character(40)
+);
+
+
+ALTER TABLE public."SustanciaAlergia" OWNER TO postgres;
+
+--
+-- Name: SustanciaAlergia_IdSustancia_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "SustanciaAlergia_IdSustancia_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."SustanciaAlergia_IdSustancia_seq" OWNER TO postgres;
+
+--
+-- Name: SustanciaAlergia_IdSustancia_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "SustanciaAlergia_IdSustancia_seq" OWNED BY "SustanciaAlergia"."IdSustanciaAlergia";
+
+
+--
+-- Name: TipoR; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "TipoR" (
+    "nombreT" text NOT NULL
+);
+
+
+ALTER TABLE public."TipoR" OWNER TO postgres;
+
+--
+-- Name: TABLE "TipoR"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE "TipoR" IS 'Tipos de radiografias';
+
+
+--
+-- Name: Trabajo; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Trabajo" (
+    "NombreTrabajo" character(30) NOT NULL,
+    "IdAntecedentes" integer NOT NULL
+);
+
+
+ALTER TABLE public."Trabajo" OWNER TO postgres;
+
+--
+-- Name: Trabajo_IdAntecedentes_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Trabajo_IdAntecedentes_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."Trabajo_IdAntecedentes_seq" OWNER TO postgres;
+
+--
+-- Name: Trabajo_IdAntecedentes_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Trabajo_IdAntecedentes_seq" OWNED BY "Trabajo"."IdAntecedentes";
+
+
+--
+-- Name: Zonas; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Zonas" (
+    "nombreZ" text NOT NULL
+);
+
+
+ALTER TABLE public."Zonas" OWNER TO postgres;
+
+--
+-- Name: TABLE "Zonas"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE "Zonas" IS 'Zonas del cuerpo que corresponden radiografias';
+
+
+--
+-- Name: seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE seq
+    START WITH 350
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.seq OWNER TO postgres;
+
+--
+-- Name: IdSustancia; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Adiccion" ALTER COLUMN "IdSustancia" SET DEFAULT nextval('"Adiccion_IdSustancia_seq"'::regclass);
+
+
+--
+-- Name: IdAntecedentes; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Adiccion" ALTER COLUMN "IdAntecedentes" SET DEFAULT nextval('"Adiccion_IdAntecedentes_seq"'::regclass);
+
+
+--
+-- Name: IdAntecedentes; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Alergico" ALTER COLUMN "IdAntecedentes" SET DEFAULT nextval('"Alergico_IdAntecedentes_seq"'::regclass);
+
+
+--
+-- Name: IdSustancia; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Alergico" ALTER COLUMN "IdSustancia" SET DEFAULT nextval('"Alergico_IdSustancia_seq"'::regclass);
+
+
+--
+-- Name: IdAntecedentes; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Antecedentes" ALTER COLUMN "IdAntecedentes" SET DEFAULT nextval('"Antecedentes_IdAntecedentes_seq"'::regclass);
+
+
+--
+-- Name: IdAntecedentes; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "En Contexto de" ALTER COLUMN "IdAntecedentes" SET DEFAULT nextval('"En Contexto de_IdAntecedentes_seq"'::regclass);
+
+
+--
+-- Name: IdRadio; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "En Contexto de" ALTER COLUMN "IdRadio" SET DEFAULT nextval('"En Contexto de_IdRadio_seq"'::regclass);
+
+
+--
+-- Name: IdRadio; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Frames" ALTER COLUMN "IdRadio" SET DEFAULT nextval('"Frames_IdRadio_seq"'::regclass);
+
+
+--
+-- Name: IdAntecedentes; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Intervencion" ALTER COLUMN "IdAntecedentes" SET DEFAULT nextval('"Intervencion_IdAntecedentes_seq"'::regclass);
+
+
+--
+-- Name: IdMedicamento; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Medicamento" ALTER COLUMN "IdMedicamento" SET DEFAULT nextval('"Medicamento_IdMedicamento_seq"'::regclass);
+
+
+--
+-- Name: IdAntecedentes; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Otros" ALTER COLUMN "IdAntecedentes" SET DEFAULT nextval('"Otros_IdAntecedentes_seq"'::regclass);
+
+
+--
+-- Name: IdMedicamento; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Prescripcion Medica" ALTER COLUMN "IdMedicamento" SET DEFAULT nextval('"Prescripcion Medica_IdMedicamento_seq"'::regclass);
+
+
+--
+-- Name: IdAntecedentes; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Prescripcion Medica" ALTER COLUMN "IdAntecedentes" SET DEFAULT nextval('"Prescripcion Medica_IdAntecedentes_seq"'::regclass);
+
+
+--
+-- Name: IdRadio; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Radiografia" ALTER COLUMN "IdRadio" SET DEFAULT nextval('"Radiografia_IdRadio_seq"'::regclass);
+
+
+--
+-- Name: IdRadio; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Representa" ALTER COLUMN "IdRadio" SET DEFAULT nextval('"Representa_IdRadio_seq"'::regclass);
+
+
+--
+-- Name: IdSustanciaAdiccion; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "SustanciaAdiccion" ALTER COLUMN "IdSustanciaAdiccion" SET DEFAULT nextval('"SustanciaAdiccion_IdSustancia_seq"'::regclass);
+
+
+--
+-- Name: IdSustanciaAlergia; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "SustanciaAlergia" ALTER COLUMN "IdSustanciaAlergia" SET DEFAULT nextval('"SustanciaAlergia_IdSustancia_seq"'::regclass);
+
+
+--
+-- Name: IdAntecedentes; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Trabajo" ALTER COLUMN "IdAntecedentes" SET DEFAULT nextval('"Trabajo_IdAntecedentes_seq"'::regclass);
+
+
+--
+-- Name: Adiccion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Adiccion"
+    ADD CONSTRAINT "Adiccion_pkey" PRIMARY KEY ("IdSustancia", "IdAntecedentes");
+
+
+--
+-- Name: Alergico_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Alergico"
+    ADD CONSTRAINT "Alergico_pkey" PRIMARY KEY ("IdAntecedentes", "IdSustancia");
+
+
+--
+-- Name: Antecedentes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Antecedentes"
+    ADD CONSTRAINT "Antecedentes_pkey" PRIMARY KEY ("IdAntecedentes");
+
+
+--
+-- Name: En Contexto de_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "En Contexto de"
+    ADD CONSTRAINT "En Contexto de_pkey" PRIMARY KEY ("IdRadio", "IdAntecedentes");
+
+
+--
+-- Name: Enfermedad_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Enfermedad"
+    ADD CONSTRAINT "Enfermedad_pkey" PRIMARY KEY ("NombreE");
+
+
+--
+-- Name: Frames_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Frames"
+    ADD CONSTRAINT "Frames_pkey" PRIMARY KEY ("NumOfFrame", "IdRadio");
+
+
+--
+-- Name: Intervencion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Intervencion"
+    ADD CONSTRAINT "Intervencion_pkey" PRIMARY KEY ("IdAntecedentes", "FechaOperacion", "NombreOperacion", "DrOperacion");
+
+
+--
+-- Name: Medicamento_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Medicamento"
+    ADD CONSTRAINT "Medicamento_pkey" PRIMARY KEY ("IdMedicamento");
+
+
+--
+-- Name: Primary Otros; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Otros"
+    ADD CONSTRAINT "Primary Otros" PRIMARY KEY ("IdAntecedentes", "Comentario");
+
+
+--
+-- Name: Primary Paciente; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Paciente"
+    ADD CONSTRAINT "Primary Paciente" PRIMARY KEY ("Nombres", "RUN", "Apellidos");
+
+
+--
+-- Name: Primary PrescripcionMedica; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Prescripcion Medica"
+    ADD CONSTRAINT "Primary PrescripcionMedica" PRIMARY KEY ("IdAntecedentes", "IdMedicamento");
+
+
+--
+-- Name: Primary Radiografia; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Radiografia"
+    ADD CONSTRAINT "Primary Radiografia" PRIMARY KEY ("IdRadio");
+
+
+--
+-- Name: Primary Representa; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Representa"
+    ADD CONSTRAINT "Primary Representa" PRIMARY KEY ("IdRadio", "NombreE");
+
+
+--
+-- Name: Primary SustanciaAdiccion; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "SustanciaAdiccion"
+    ADD CONSTRAINT "Primary SustanciaAdiccion" PRIMARY KEY ("IdSustanciaAdiccion");
+
+
+--
+-- Name: Primary SustanciaAlergia; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "SustanciaAlergia"
+    ADD CONSTRAINT "Primary SustanciaAlergia" PRIMARY KEY ("IdSustanciaAlergia");
+
+
+--
+-- Name: Procedencias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Procedencias"
+    ADD CONSTRAINT "Procedencias_pkey" PRIMARY KEY ("nombreP");
+
+
+--
+-- Name: TipoR_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "TipoR"
+    ADD CONSTRAINT "TipoR_pkey" PRIMARY KEY ("nombreT");
+
+
+--
+-- Name: Trabajo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Trabajo"
+    ADD CONSTRAINT "Trabajo_pkey" PRIMARY KEY ("NombreTrabajo", "IdAntecedentes");
+
+
+--
+-- Name: Zonas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Zonas"
+    ADD CONSTRAINT "Zonas_pkey" PRIMARY KEY ("nombreZ");
+
+
+--
+-- Name: Adiccion_IdSustancia_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE INDEX "Adiccion_IdSustancia_idx" ON "Adiccion" USING btree ("IdSustancia");
+
+
+--
+-- Name: Adiccion_IdAntecedentes_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Adiccion"
+    ADD CONSTRAINT "Adiccion_IdAntecedentes_fkey" FOREIGN KEY ("IdAntecedentes") REFERENCES "Antecedentes"("IdAntecedentes");
+
+
+--
+-- Name: Adiccion_IdSustancia_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Adiccion"
+    ADD CONSTRAINT "Adiccion_IdSustancia_fkey" FOREIGN KEY ("IdSustancia") REFERENCES "SustanciaAdiccion"("IdSustanciaAdiccion");
+
+
+--
+-- Name: Alergico_IdAntecedentes_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Alergico"
+    ADD CONSTRAINT "Alergico_IdAntecedentes_fkey" FOREIGN KEY ("IdAntecedentes") REFERENCES "Antecedentes"("IdAntecedentes");
+
+
+--
+-- Name: Alergico_IdSustancia_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Alergico"
+    ADD CONSTRAINT "Alergico_IdSustancia_fkey" FOREIGN KEY ("IdSustancia") REFERENCES "SustanciaAlergia"("IdSustanciaAlergia");
+
+
+--
+-- Name: En Contexto de_IdAntecedentes_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "En Contexto de"
+    ADD CONSTRAINT "En Contexto de_IdAntecedentes_fkey" FOREIGN KEY ("IdAntecedentes") REFERENCES "Antecedentes"("IdAntecedentes");
+
+
+--
+-- Name: En Contexto de_IdRadio_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "En Contexto de"
+    ADD CONSTRAINT "En Contexto de_IdRadio_fkey" FOREIGN KEY ("IdRadio") REFERENCES "Radiografia"("IdRadio");
+
+
+--
+-- Name: Frames_IdRadio_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Frames"
+    ADD CONSTRAINT "Frames_IdRadio_fkey" FOREIGN KEY ("IdRadio") REFERENCES "Radiografia"("IdRadio");
+
+
+--
+-- Name: Intervencion_IdAntecedentes_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Intervencion"
+    ADD CONSTRAINT "Intervencion_IdAntecedentes_fkey" FOREIGN KEY ("IdAntecedentes") REFERENCES "Antecedentes"("IdAntecedentes");
+
+
+--
+-- Name: Otros_IdAntecedentes_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Otros"
+    ADD CONSTRAINT "Otros_IdAntecedentes_fkey" FOREIGN KEY ("IdAntecedentes") REFERENCES "Antecedentes"("IdAntecedentes");
+
+
+--
+-- Name: Prescripcion Medica_IdAntecedentes_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Prescripcion Medica"
+    ADD CONSTRAINT "Prescripcion Medica_IdAntecedentes_fkey" FOREIGN KEY ("IdAntecedentes") REFERENCES "Antecedentes"("IdAntecedentes");
+
+
+--
+-- Name: Prescripcion Medica_IdMedicamento_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Prescripcion Medica"
+    ADD CONSTRAINT "Prescripcion Medica_IdMedicamento_fkey" FOREIGN KEY ("IdMedicamento") REFERENCES "Medicamento"("IdMedicamento");
+
+
+--
+-- Name: Radiografia_Procedencia_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Radiografia"
+    ADD CONSTRAINT "Radiografia_Procedencia_fkey" FOREIGN KEY ("Procedencia") REFERENCES "Procedencias"("nombreP") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Radiografia_Tipo_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Radiografia"
+    ADD CONSTRAINT "Radiografia_Tipo_fkey" FOREIGN KEY ("Tipo") REFERENCES "TipoR"("nombreT") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Radiografia_Zona_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Radiografia"
+    ADD CONSTRAINT "Radiografia_Zona_fkey" FOREIGN KEY ("Zona") REFERENCES "Zonas"("nombreZ") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: Representa_IdRadio_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Representa"
+    ADD CONSTRAINT "Representa_IdRadio_fkey" FOREIGN KEY ("IdRadio") REFERENCES "Radiografia"("IdRadio");
+
+
+--
+-- Name: Representa_NombreE_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Representa"
+    ADD CONSTRAINT "Representa_NombreE_fkey" FOREIGN KEY ("NombreE") REFERENCES "Enfermedad"("NombreE");
+
+
+--
+-- Name: Trabajo_IdAntecedentes_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Trabajo"
+    ADD CONSTRAINT "Trabajo_IdAntecedentes_fkey" FOREIGN KEY ("IdAntecedentes") REFERENCES "Antecedentes"("IdAntecedentes");
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

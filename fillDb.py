@@ -5,7 +5,8 @@ from dateutil.relativedelta import relativedelta
 import random
 import datetime
 
-from librerias.SearchCriteria import askDb
+from SearchCriteria import askDb
+
 
 
 #ESTA MUY MUY DESACTUALIZADO NO USAR
