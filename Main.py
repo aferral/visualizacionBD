@@ -14,7 +14,7 @@ def createIngreso():
 
 def createBusqueda():
         t = Tkinter.Toplevel(top)
-        ventana = runVis.Demo(t)
+        ventana = runVis.GraficInterfaceDb(t)
         pass
 
 nuevo= Tkinter.Label(top,text="Bases de Datos\n para imagenologia toraxica").pack(padx=5,pady=5)
