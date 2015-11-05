@@ -55,6 +55,8 @@ class GraficInterfaceDb:
         self.putInPlace(SexoSearch)
         #Filtrar por Enfermedad y confirmado comboBox
         self.listObserver.append(self.putInPlace(Enfermedadearch))
+        #Filtro confirmado
+        self.putInPlace(ConfirmadoSearch)
         #Tipo de radiografia
         self.putInPlace(TipoRadioSearch)
         #Fecha inicio fecha final

@@ -11,7 +11,7 @@ def askDb(stringQuery,params):
     conn = psycopg2.connect(database='radiografiasUchile',
                             host='localhost',
                             port=5432 ,
-                            password = '58132154',
+                            password = '',
                             user='postgres')
 
     cursor = conn.cursor()
@@ -155,18 +155,10 @@ class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
         self.enfermedadaValues = StringVar()
         self.comboEnfermedades = ttk.Combobox(marco, textvariable=self.enfermedadaValues,
                                 state='readonly')
-        # self.comboEnfermedades['values'] = tuple(lista)
-        self.varSi = IntVar()
-        marcoF0 = Frame(marco)
-        r1 = Radiobutton(marcoF0, text="Confirmado", variable=self.varSi, value=1)
-        r1.pack(side=LEFT)
-        r2 = Radiobutton(marcoF0, text="Sospechoso", variable=self.varSi, value=2)
-        r2.pack(side=RIGHT)
 
 
         self.ajusta(lEnfermedad)
         self.ajusta(self.comboEnfermedades)
-        self.ajusta(marcoF0)
 
         pass
 
@@ -178,6 +170,25 @@ class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
         return auxProcessList(queryEnfermedad, params)
 
 
+class ConfirmadoSearch(AbstractSearchCriteria):
+    def __init__(self, marco,modo):
+        AbstractSearchCriteria.__init__(self,marco,modo)
+        self.varSi = IntVar()
+        marcoF0 = Frame(marco)
+        r1 = Radiobutton(marcoF0, text="Confirmado", variable=self.varSi, value=1)
+        r1.pack(side=LEFT)
+        r2 = Radiobutton(marcoF0, text="Sospechoso", variable=self.varSi, value=2)
+        r2.pack(side=RIGHT)
+
+
+        self.ajusta(marcoF0)
+
+        pass
+
+
+    def giveFilterResults(self):
+        params = (str(self.comboEnfermedades.get()),'TRUE' if (self.varSi.get()==1) else 'FALSE',)
+        return auxProcessList(queryEnfermedad, params)
 
 
 
@@ -251,7 +262,7 @@ class FechaSearch(AbstractSearchCriteria): # Va rango de fechas
 class FumaSearch(AbstractSearchCriteria):
     def __init__(self,marco,modo):
         AbstractSearchCriteria.__init__(self,marco,modo)
-        lConfirmado = Label(marco,text="Fuma ? ")
+        lConfirmado = Label(marco,text="Fuma")
         self.ajusta(lConfirmado)
         pass
     def giveFilterResults(self):
