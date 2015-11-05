@@ -28,8 +28,8 @@ idColumnName = "('IdRadio',)"
 
 
 
-class GraficInterfaceDb:
-    def __init__(self):
+class Demo():
+    def __init__(self,parent):
 
         self.listEnfermedad = ['a',"d","c"]
         self.listMedicamentos = ['a',"d","c"]
@@ -37,7 +37,7 @@ class GraficInterfaceDb:
         self.actualizarListas()
         self.actualrow = 0
 
-        self.r = Tk()
+        self.r = parent
         self.r.wm_title("Ventana de busqueda")
         self.group = LabelFrame(self.r,bd=0)
         self.group.grid(row=0,column=0,sticky=NW, padx=5, pady=5)
@@ -94,7 +94,6 @@ class GraficInterfaceDb:
         self.b.setWindow(self)
 
         self.r.bind("<Button-1>",self.b.setValues)
-        self.r.mainloop()
 
     def getEnfList(self):
         print "Lista de enfermedad "+str(self.listEnfermedad)
@@ -184,5 +183,3 @@ class GraficInterfaceDb:
         self.table.redrawTable()
 
         return
-
-a = GraficInterfaceDb()

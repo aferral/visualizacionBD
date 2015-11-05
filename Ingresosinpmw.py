@@ -224,8 +224,3 @@ class Demo:
     
     #####################################################
 
-
-
-root = Tkinter.Tk()
-demo = Demo(root)
-root.mainloop()
