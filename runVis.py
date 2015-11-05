@@ -37,7 +37,7 @@ class GraficInterfaceDb:
         self.actualizarListas()
         self.actualrow = 0
 
-        self.r = Tk()
+        self.r = parent
         self.r.wm_title("Ventana de busqueda")
         self.group = LabelFrame(self.r,bd=0)
         self.group.grid(row=0,column=0,sticky=NW, padx=5, pady=5)
