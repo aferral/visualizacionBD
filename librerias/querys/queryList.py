@@ -150,7 +150,8 @@ queryListaEnfermedad = 'SELECT "NombreE" FROM "Enfermedad"'
 #TODO BORRAR REDUNDANCIA
 queryListaEnf = 'SELECT DISTINCT "NombreE" FROM "Enfermedad" ORDER BY "NombreE" '
 queryEnfName = 'SELECT DISTINCT "NombreE" FROM "Enfermedad" ORDER BY "NombreE" '
-queryEnfermedad = 'Select "IdRadio" FROM "Representa" WHERE ("NombreE" = %s AND "Confirmado" = %s)'
+queryEnfermedadNombre = 'Select "IdRadio" FROM "Representa" WHERE ("NombreE" = %s)'
+queryEnfermedadConfirmado = 'Select "IdRadio" FROM "Representa" WHERE ("Confirmado" = %s)'
 
 queryRepresentaFromId = 'Select "NombreE", "Confirmado","Comentario","IdRadio" ' \
                         'FROM "Representa" WHERE "IdRadio" = %s'

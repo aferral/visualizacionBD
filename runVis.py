@@ -28,8 +28,8 @@ idColumnName = "('IdRadio',)"
 
 
 
-class Demo():
-    def __init__(self,parent):
+class GraficInterfaceDb:
+    def __init__(self):
 
         self.listEnfermedad = ['a',"d","c"]
         self.listMedicamentos = ['a',"d","c"]
@@ -37,7 +37,7 @@ class Demo():
         self.actualizarListas()
         self.actualrow = 0
 
-        self.r = parent
+        self.r = Tk()
         self.r.wm_title("Ventana de busqueda")
         self.group = LabelFrame(self.r,bd=0)
         self.group.grid(row=0,column=0,sticky=NW, padx=5, pady=5)
@@ -73,8 +73,7 @@ class Demo():
 
         lResultados = Label(marco11, text="Resultados de query: ")
         lResultados.pack(padx=5, pady=5)
-        bExportExcel = Button(marco11, text="Exportar a excel")
-        bExportExcel.pack(padx=5, pady=5)
+
         marco11.grid(row=self.actualrow, column=0,sticky=W, padx=5, pady=5)
         self.actualrow+=1
 
@@ -93,7 +92,8 @@ class Demo():
         self.b = VentanaDetalles(Tkinter.Toplevel())
         self.b.setWindow(self)
 
-        self.r.bind("<Button-1>",self.b.setValues)
+        #self.r.bind("<Button-1>",self.b.setValues)
+        self.r.mainloop()
 
     def getEnfList(self):
         print "Lista de enfermedad "+str(self.listEnfermedad)
@@ -183,3 +183,5 @@ class Demo():
         self.table.redrawTable()
 
         return
+
+a = GraficInterfaceDb()

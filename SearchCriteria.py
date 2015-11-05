@@ -11,7 +11,7 @@ def askDb(stringQuery,params):
     conn = psycopg2.connect(database='radiografiasUchile',
                             host='localhost',
                             port=5432 ,
-                            password = '',
+                            password = '58132154',
                             user='postgres')
 
     cursor = conn.cursor()
@@ -166,8 +166,8 @@ class Enfermedadearch(AbstractSearchCriteria): #Va enfermedad y confirmado
         self.comboEnfermedades['values'] = tuple(objToQuery.getEnfList())
 
     def giveFilterResults(self):
-        params = (str(self.comboEnfermedades.get()),'TRUE' if (self.varSi.get()==1) else 'FALSE',)
-        return auxProcessList(queryEnfermedad, params)
+        params = (str(self.comboEnfermedades.get()),)
+        return auxProcessList(queryEnfermedadNombre, params)
 
 
 class ConfirmadoSearch(AbstractSearchCriteria):
@@ -180,15 +180,13 @@ class ConfirmadoSearch(AbstractSearchCriteria):
         r2 = Radiobutton(marcoF0, text="Sospechoso", variable=self.varSi, value=2)
         r2.pack(side=RIGHT)
 
-
         self.ajusta(marcoF0)
 
         pass
 
-
     def giveFilterResults(self):
-        params = (str(self.comboEnfermedades.get()),'TRUE' if (self.varSi.get()==1) else 'FALSE',)
-        return auxProcessList(queryEnfermedad, params)
+        params = ('TRUE' if (self.varSi.get()==1) else 'FALSE',)
+        return auxProcessList(queryEnfermedadConfirmado, params)
 
 
 
