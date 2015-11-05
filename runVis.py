@@ -1,3 +1,5 @@
+import time
+
 __author__ = 'aferral'
 
 from tkintertable.Tables import TableCanvas
@@ -36,6 +38,7 @@ class GraficInterfaceDb:
         self.listObserver = []
         self.actualizarListas()
         self.actualrow = 0
+        self.rowEvent = 99
 
         self.r1 = parent
         self.r = Frame(self.r1)
@@ -98,7 +101,7 @@ class GraficInterfaceDb:
         self.a.pack(side=RIGHT)
 
 
-        #self.r.bind("<Button-1>",self.b.setValues)
+        self.r1.bind("<Button-1>",self.changeCurrentId)
 
 
     def getEnfList(self):
@@ -143,6 +146,13 @@ class GraficInterfaceDb:
         for element in self.listObserver:
             element.update(self)
 
+    def changeCurrentId(self,event):
+        print "Antiguo ",self.rowEvent," real ",self.table.currentrow
+        if (self.rowEvent != self.table.currentrow):
+            print("Evento activado")
+            self.rowEvent = self.table.currentrow
+            self.b.setValues(event)
+        pass
 
     def doQuery(self):
         self.actualizarListas()
