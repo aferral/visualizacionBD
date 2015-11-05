@@ -37,8 +37,9 @@ class GraficInterfaceDb:
         self.actualizarListas()
         self.actualrow = 0
 
-        self.r = parent
-        self.r.wm_title("Ventana de busqueda")
+        self.r1 = parent
+        self.r = Frame(self.r1)
+        self.r1.wm_title("Ventana de busqueda")
         self.group = LabelFrame(self.r,bd=0)
         self.group.grid(row=0,column=0,sticky=NW, padx=5, pady=5)
 
@@ -89,8 +90,13 @@ class GraficInterfaceDb:
 
         self.actualizarListas()
 
-        self.b = VentanaDetalles(Tkinter.Toplevel())
+
+        self.r.pack(side=LEFT)
+        self.a = Frame(self.r1,padx=20, pady=20)
+        self.b = VentanaDetalles(self.a)
         self.b.setWindow(self)
+        self.a.pack(side=RIGHT)
+
 
         #self.r.bind("<Button-1>",self.b.setValues)
 
