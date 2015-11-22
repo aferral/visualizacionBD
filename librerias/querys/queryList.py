@@ -72,7 +72,7 @@ queryListaMed = 'SELECT "NombreMedicamento" FROM "Medicamento" '
 queryAddDroga = 'INSERT INTO "SustanciaAdiccion"( "NombreSustanciaAdiccion") VALUES (%s);'
 queryDeleteDroga = 'DELETE FROM "SustanciaAdiccion" WHERE "NombreSustanciaAdiccion" = %s ;'
 queryUpdateDroga = 'UPDATE "SustanciaAdiccion" SET "NombreSustanciaAdiccion"= %s WHERE "NombreSustanciaAdiccion" = %s;'
-queryListaDroga = 'SELECT "NombreSustanciaAdiccion", "IdSustanciaAdiccion" FROM "SustanciaAdiccion";'
+queryListaDroga = 'SELECT "IdSustanciaAdiccion","NombreSustanciaAdiccion" FROM "SustanciaAdiccion";'
 
 queryAdiccion = 'SELECT "NombreSustanciaAdiccion" FROM "Adiccion" JOIN "SustanciaAdiccion" ON ' \
                 '("Adiccion"."IdSustancia" = "SustanciaAdiccion"."IdSustanciaAdiccion") WHERE "IdAntecedentes"' \

@@ -28,16 +28,16 @@ class Demo:
 
         #Construcciones y grideo
         Label(self.groupCreate.interior(),
-            text = 'RUT:').grid(row=0,column=1,sticky=W, padx=5, pady=5)
+            text = '*RUT:').grid(row=0,column=1,sticky=W, padx=5, pady=5)
         Entry(self.groupCreate.interior(),textvariable=self.varRun).grid(row=0,column=2)
 
         Label(self.groupCreate.interior(),
-            text = 'Nombre:').grid(row=1,column=1,sticky=W, padx=5, pady=5)
+            text = '*Nombre:').grid(row=1,column=1,sticky=W, padx=5, pady=5)
 
         Entry(self.groupCreate.interior(),textvariable=self.varNombre).grid(row=1,column=2)
 
         Label(self.groupCreate.interior(),
-            text = 'Apellido:').grid(row=2,column=1,sticky=W, padx=5, pady=5)
+            text = '*Apellido:').grid(row=2,column=1,sticky=W, padx=5, pady=5)
 
         Entry(self.groupCreate.interior(),textvariable=self.varApellido).grid(row=2,column=2)
 

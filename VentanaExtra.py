@@ -1,6 +1,7 @@
 # -*- coding: cp1252 -*-
 import Tkinter
 from Tkinter import *
+import tkMessageBox
 import ttk
 
 import Pmw
@@ -111,17 +112,23 @@ class Demo:
 
 
     def borrar(self):
-        print "Se esta borrando"
-        print str(self.deleteVar.get())
-        test = str(self.deleteVar.get()).split(",")
-        if len(test) > 1:
-            nombreViejo = test[1]
-        else:
-            nombreViejo = test[0]
-        params = (nombreViejo,)
-        askDb(self.consultaDelet,params)
+        result = tkMessageBox.askquestion("Borrar", "Estas completamente seguro?", icon='warning')
+        if result == 'yes':
+            print "Se esta borrando"
+            print str(self.deleteVar.get())
+            test = str(self.deleteVar.get()).split(",")
+            if len(test) > 1:
+                nombreViejo = test[1]
+            else:
+                nombreViejo = test[0]
+            params = (nombreViejo,)
+            askDb(self.consultaDelet,params)
 
-        self.update()
+            self.update()
+        else:
+            print "No voy a borrar"
+
+
 
     def editar(self):
         print "Se esta editando"

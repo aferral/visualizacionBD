@@ -148,9 +148,10 @@ class GraficInterfaceDb:
 
     def changeCurrentId(self,event):
         print "Antiguo ",self.rowEvent," real ",self.table.currentrow
+
         if (self.rowEvent != self.table.currentrow):
-            print("Evento activado")
             self.rowEvent = self.table.currentrow
+            print("Evento activado")
             self.b.setValues(event)
         pass
 
@@ -198,5 +199,6 @@ class GraficInterfaceDb:
         self.model.importDict(data)
         self.table.redrawTable()
 
+        self.b.setValues(0)
         return
 

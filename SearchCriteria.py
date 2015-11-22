@@ -5,13 +5,14 @@ import ttk
 from Calendar import *
 from librerias.querys.queryList import *
 
+
 def askDb(stringQuery,params):
     result = []
     ## Cambia el nombre de la DB
     conn = psycopg2.connect(database='radiografiasUchile',
                             host='localhost',
                             port=5432 ,
-                            password = '58132154',
+                            password = 'postgres',
                             user='postgres')
 
     cursor = conn.cursor()
