@@ -27,7 +27,7 @@ class Demo:
             '  email: jjatjenkins1@gmail.com\n' +
             '  aferral and argorthas'
         )
-        self.about = Pmw.AboutDialog(parent, applicationname = 'My Application')
+        self.about = Pmw.AboutDialog(parent, applicationname = 'Interfaz grafica base de datos Radiografias Uchile')
         self.about.withdraw()
 
 
@@ -168,6 +168,9 @@ class Demo:
         # Create and pack the ButtonBox.
         b = Button(parent, text="Crear", command=self.crearRadiografia)
         b.pack(padx = 10, pady = 10,side=RIGHT)
+
+        b = Button(parent, text="Borrar campos", command=self.clean)
+        b.pack(padx = 10, pady = 10,side=RIGHT)
         self.actualizaListas()
 
     def getCurrentIdRadio(self):
@@ -175,6 +178,9 @@ class Demo:
     def setCurrentIdRadio(self,newId):
         self.currentIdRadio = newId
 
+    def clean(self):
+        self.vistaRadio.clean()
+        pass
     def crearRadiografia(self):
 
         #Creacion de Radiografia segun su modelo de datos

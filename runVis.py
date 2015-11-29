@@ -26,7 +26,7 @@ resultSearch = []
 #Claves y usuarios
 
 
-idColumnName = "('IdRadio',)"
+idColumnName = "IdRadio"
 
 
 
@@ -40,12 +40,20 @@ class GraficInterfaceDb:
         self.actualrow = 0
         self.rowEvent = 99
 
+        #Ventana de tablas y entradas
         self.r1 = parent
         self.r = Frame(self.r1)
         self.r1.wm_title("Ventana de busqueda")
         self.group = LabelFrame(self.r,bd=0)
-        self.group.grid(row=0,column=0,sticky=NW, padx=5, pady=5)
+        # self.group.grid(row=0,column=0,sticky=NW, padx=5, pady=5)
+        self.group.pack(side=LEFT)
+        self.r.pack(expand=True, fill='x',side=LEFT)
 
+        # Ventana que muestra antecedesntes y informacion especifica de radiografia
+        self.a = Frame(self.r1,padx=20, pady=20)
+        self.b = VentanaDetalles(self.a)
+        self.b.setWindow(self)
+        self.a.pack(side=RIGHT)
 
         #Filtrar por id
         self.putInPlace(IdSearch)
@@ -78,27 +86,24 @@ class GraficInterfaceDb:
         lResultados = Label(marco11, text="Resultados de query: ")
         lResultados.pack(padx=5, pady=5)
 
-        marco11.grid(row=self.actualrow, column=0,sticky=W, padx=5, pady=5)
+        # marco11.grid(row=self.actualrow, column=0,sticky=W, padx=5, pady=5)
+        marco11.pack()
         self.actualrow+=1
 
         marco12 = Frame(self.r)
         self.model = TableModel()
         self.table = TableCanvas(marco12, self.model,
-                            cellwidth=60, cellbackgr='#e3f698',
+                            cellwidth=120, cellbackgr='#e3f698',
                             thefont=('Arial',9),rowheight=18, rowheaderwidth=30,
-                            rowselectedcolor='yellow', editable=True)
+                            rowselectedcolor='yellow', editable=False)
         self.table.createTableFrame()
-        marco12.grid(row=self.actualrow,column=0,sticky=W, padx=5, pady=5)
+        # marco12.grid(row=self.actualrow,column=0,sticky=W, padx=5, pady=5)
+        marco12.pack(expand=False, fill='x')
         self.actualrow += 1
 
         self.actualizarListas()
 
 
-        self.r.pack(side=LEFT)
-        self.a = Frame(self.r1,padx=20, pady=20)
-        self.b = VentanaDetalles(self.a)
-        self.b.setWindow(self)
-        self.a.pack(side=RIGHT)
 
 
         self.r1.bind("<Button-1>",self.changeCurrentId)
@@ -122,7 +127,8 @@ class GraficInterfaceDb:
         cont = 1
         #Ejemplo de como se podrian sacar los componentes
         for comp in objetoNuevo.listaComponente:
-            comp.grid(row=self.actualrow,column=cont) 
+            comp.grid(row=self.actualrow,column=cont)
+            # comp.pack()
             cont+=1
         listaSearch.append(objetoNuevo)
 
@@ -186,12 +192,14 @@ class GraficInterfaceDb:
         if(len(lista) != 0):
             resultQuery = askDb(queryMostrar,(tuple(lista),))
             resultQuery2 = askDb(metaquery,(tuple(lista),))
-            columnNames = resultQuery2
+            for index,name in enumerate(resultQuery2):
+                columnNames[index] = name[0]
 
         for element in resultQuery:
             temp = zip(element,range(len(element)))
             tempDic = {}
             for atomicVal in temp:
+                print atomicVal
                 tempDic[str(columnNames[atomicVal[1]])] = str(atomicVal[0])
             data[str(contador)] = tempDic
             contador+=1

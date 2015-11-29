@@ -179,14 +179,17 @@ class vistaAntecedentes:
             contenedor.update('Adiccion',listaAdiccion)
 
 
+    def cleam(self):
+        #TODO ARGEGAR LIMPIAR CAMPOS.
 
+        pass
     def recreateFromId(self,idRadio):
         #Revisar en En Contexto de conseguir IdAntecedentes
         listaIdAnt = tuple(auxProcessList(querySearchIdAnt,(idRadio,)))
         if len(listaIdAnt) == 0:
             return
 
-        #TODO UPDATE THIS SHIT
+        #TODO UPDATE this
 
         #Por cada tabla ver si las ids estan en tabla.
         #Generar un trabajo si esta activado

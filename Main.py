@@ -7,6 +7,7 @@ import runVis
 
 top = Tkinter.Tk()
 
+
 def createIngreso():
         t = Tkinter.Toplevel(top)
         ventana = Ingresosinpmw.Demo(t)
