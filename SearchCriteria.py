@@ -1,19 +1,58 @@
+import datetime
+import subprocess
+from time import strftime
+
 __author__ = 'aferral'
 from Tkinter import *
 import psycopg2
 import ttk
 from Calendar import *
 from librerias.querys.queryList import *
+import sys
+import os
+
+DB_NAME = 'radiografiasUchile'
+DB_USER = 'postgres'
+HOST = "localhost"
+destinationBackup = ''
+PASS = "postgres"
+
+def backup():
+
+    # change these as appropriate for your platform/environment :
+
+    oldPath = os.getcwd()
+    os.chdir("c:\\Program Files (x86)\\postgresql\\9.4\\bin\ ")
+
+    BACKUP_DIR = oldPath+"\\tools\\"
+    dumper = """ "c:\\Program Files (x86)\\postgresql\\9.4\\bin\\pg_dump" -U %s -Z 9 -f %s -F c %s  """
+
+
+    # Change the value in brackets to keep more/fewer files. time.time() returns seconds since 1970...
+    # currently set to 2 days ago from when this script starts to run.
+
+    os.putenv('PGPASSWORD', DB_USER)
+
+
+
+    # Now perform the backup.
+
+    thetime = str(strftime("%Y-%m-%d-%H-%M"))
+    file_name = DB_NAME + '_' + thetime + ".sql.pgdump"
+    #Run the pg_dump command to the right directory
+    command = dumper % (DB_USER,  BACKUP_DIR + file_name, DB_NAME)
+
+    subprocess.call(command,shell = True)
 
 
 def askDb(stringQuery,params):
     result = []
     ## Cambia el nombre de la DB
-    conn = psycopg2.connect(database='radiografiasUchile',
-                            host='localhost',
+    conn = psycopg2.connect(database= DB_NAME,
+                            host=HOST,
                             port=5432 ,
                             password = 'postgres',
-                            user='postgres')
+                            user= DB_USER)
 
     cursor = conn.cursor()
     print "String Query : ",stringQuery

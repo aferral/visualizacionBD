@@ -15,7 +15,7 @@ class Demo:
     def __init__(self, parent):
         self.currentIdRadio = None
         self.parent = parent
-
+        self.parent.wm_title("Ingreso de datos")
 
         Pmw.aboutversion('1.0')
         Pmw.aboutcopyright('Copyright UchileDB\nAll rights reserved')

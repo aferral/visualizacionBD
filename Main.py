@@ -4,9 +4,13 @@ import Tkinter
 import tkMessageBox
 import Ingresosinpmw
 import runVis
+from SearchCriteria import backup
 
 top = Tkinter.Tk()
 
+def on_closing():
+        backup()
+        top.destroy()
 
 def createIngreso():
         t = Tkinter.Toplevel(top)
@@ -25,4 +29,7 @@ B.grid(row=1,column=0,padx=10, pady=10)
 C = Tkinter.Button(marco, text ="Busqueda\n de Datos", command = createBusqueda,height=10,width=20)
 C.grid(row=1,column=1,padx=10, pady=10)
 marco.pack()
+
+top.protocol("WM_DELETE_WINDOW", on_closing)
+
 top.mainloop()
