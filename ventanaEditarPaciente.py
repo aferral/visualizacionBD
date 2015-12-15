@@ -12,10 +12,10 @@ from patronesRecurrentes import deletePaciente
 class Demo:
     def __init__(self, parent):
         self.groupCreate = Pmw.Group(parent, tag_text = 'Crear paciente')
-        self.groupCreate.grid(row=1,column=0,sticky=E, padx=5, pady=5)
+        self.groupCreate.grid(row=1,column=0,sticky=W, padx=5, pady=5)
 
         self.groupEdit = Pmw.Group(parent, tag_text = 'Editar o borrar paciente (SOLO FECHA NAC/SEXO)')
-        self.groupEdit.grid(row=2,column=0,sticky=E, padx=5, pady=5)
+        self.groupEdit.grid(row=2,column=0,sticky=W, padx=5, pady=5)
 
         #--------------------------Grupo CREAR Paciente ------------------------------------------
         #Variables importantes
@@ -104,12 +104,13 @@ class Demo:
         Button(self.groupEdit.interior(),text="Cambiar",
                             command= lambda: self.createWindowsAndBind(self.updateFechaEdit)
                ).grid(row=5,column=3,sticky=E, padx=5, pady=5)
-
-        Button(self.groupEdit.interior(),text="Editar",
-                            command= self.editAndUpdate).grid(row=6,column=0,sticky=E, padx=5, pady=5)
-        Button(self.groupEdit.interior(),text="Borrar",
-                            command= self.deleteAndUpdate).grid(row=6,column=1,sticky=E, padx=5, pady=5)
-
+        marco=Frame(self.groupEdit.interior())
+        Button(marco,text="Editar",
+                            command= self.editAndUpdate).grid(row=0,column=0,sticky=E, padx=5, pady=5)
+        Button(marco,text="Borrar",
+                            command= self.deleteAndUpdate).grid(row=0,column=1,sticky=E, padx=5, pady=5)
+        marco.grid(row=6,column=3,sticky=E, padx=5, pady=5)
+        
     def createPac(self):
         crearPaciente(
             self.boolsexo,
